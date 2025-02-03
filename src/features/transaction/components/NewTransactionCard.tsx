@@ -4,8 +4,10 @@ import { Dialog } from '@/components/ui/dialog';
 import React, { useState } from 'react';
 import NewTransactionDialog from './NewTransactionDialog';
 import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
 
 const NewTransactionCard = () => {
+	const router = useRouter();
 	const transactionInput = React.useRef<HTMLInputElement>(null);
 	const [transactionAmount, setTransactionAmount] = useState<null | number>(
 		null
@@ -38,6 +40,15 @@ const NewTransactionCard = () => {
 		}
 	};
 
+	const handleAddNewTransactionSuccess = () => {
+		if (transactionInput.current != null) {
+			transactionInput.current.value = '0';
+			transactionInput.current.focus();
+		}
+		setTransactionAmount(null);
+		router.refresh();
+	};
+
 	return (
 		<section className='bg-slate-50 rounded-sm p-4 flex flex-col gap-2'>
 			<h4 className='font-bold text-lg'>New Transaction</h4>
@@ -57,7 +68,10 @@ const NewTransactionCard = () => {
 				onOpenChange={() => setTransactionAmount(null)}
 			>
 				{transactionAmount != null && (
-					<NewTransactionDialog transactionAmount={transactionAmount} />
+					<NewTransactionDialog
+						handleSaveSuccess={handleAddNewTransactionSuccess}
+						transactionAmount={transactionAmount}
+					/>
 				)}
 			</Dialog>
 		</section>

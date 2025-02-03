@@ -6,9 +6,9 @@ const TransactionList = async () => {
 	const transactions = await getTransactionsAction();
 
 	return (
-		<ol className='overflow-auto h-full'>
+		<ol className='overflow-auto h-full flex flex-col gap-1'>
 			{transactions.map((transaction) => (
-				<TransactionListItem key={transaction.id} />
+				<TransactionListItem key={transaction.id} transaction={transaction} />
 			))}
 		</ol>
 	);
