@@ -1,4 +1,5 @@
 import GoalsCard from '@/features/goals/components/GoalsCard';
+import CostDistributionCard from '@/features/transaction/components/CostDistributionCard';
 import NewTransactionCard from '@/features/transaction/components/NewTransactionCard';
 import TransactionList from '@/features/transaction/components/TransactionList';
 
@@ -11,9 +12,7 @@ export default function Home() {
 			<NewTransactionCard />
 			<section className='grid grid-rows-2 flex-col gap-2 col-span-1 md:col-span-2 md:row-span-2'>
 				<GoalsCard />
-				<section className='bg-slate-50 rounded-sm p-2'>
-					Recurring Expenses
-				</section>
+				<CostDistributionCard />
 			</section>
 			<section className='bg-slate-50 rounded-sm p-4 flex flex-col gap-2 overflow-auto'>
 				<h4 className='font-bold text-lg'>Recent Transactions</h4>
