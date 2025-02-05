@@ -30,7 +30,7 @@ const GoalsLine = ({ goal, currentDate, allocateFunds }: GoalsLineProps) => {
 				<Button
 					size='icon'
 					title='Allocate Funds'
-					onClick={() => allocateFunds(goal.id.toString())}
+					onClick={() => allocateFunds(`ALLOCATED_TO_GOAL_${goal.id}`)}
 				>
 					<HandCoins />
 				</Button>
