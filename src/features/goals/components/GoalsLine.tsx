@@ -9,9 +9,10 @@ import DynamicIcon from '@/features/Icons/components/DynamicIcon';
 type GoalsLineProps = {
 	goal: Goal;
 	currentDate: Date;
+	allocateFunds: (note: string) => void;
 };
 
-const GoalsLine = ({ goal, currentDate }: GoalsLineProps) => {
+const GoalsLine = ({ goal, currentDate, allocateFunds }: GoalsLineProps) => {
 	return (
 		<li className='flex flex-col gap-1 py-2'>
 			<div className='flex justify-between'>
@@ -26,7 +27,11 @@ const GoalsLine = ({ goal, currentDate }: GoalsLineProps) => {
 					value={(goal.allocatedAmount * 100) / goal.targetAmount}
 					title={`${(goal.allocatedAmount * 100) / goal.targetAmount}%`}
 				/>
-				<Button size='icon' title='Allocate Funds'>
+				<Button
+					size='icon'
+					title='Allocate Funds'
+					onClick={() => allocateFunds(goal.id.toString())}
+				>
 					<HandCoins />
 				</Button>
 			</div>

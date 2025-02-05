@@ -34,14 +34,35 @@ import { Calendar } from '@/components/ui/calendar';
 import { newTransactionAction } from '../actions/newTransactionAction';
 import { useToast } from '@/hooks/use-toast';
 
+export type NewTransactionDialogFormState = {
+	isExpense?: {
+		disabled?: boolean;
+		value: boolean;
+	};
+	costBucket?: {
+		disabled?: boolean;
+		value: string;
+	};
+	notes?: {
+		disabled?: boolean;
+		value: string;
+	};
+};
+
 type NewTransactionDialogProps = {
 	transactionAmount: number;
 	handleSaveSuccess: () => void;
+	formState?: NewTransactionDialogFormState;
+	title?: string;
+	description?: string;
 };
 
 const NewTransactionDialog = ({
 	transactionAmount,
 	handleSaveSuccess,
+	formState,
+	title,
+	description,
 }: NewTransactionDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
@@ -50,9 +71,12 @@ const NewTransactionDialog = ({
 		defaultValues: {
 			amount: transactionAmount,
 			date: new Date(),
-			isExpense: true,
-			costBucket: '',
-			notes: '',
+			isExpense:
+				formState?.isExpense?.value === undefined
+					? true
+					: formState.isExpense.value,
+			costBucket: formState?.costBucket?.value ?? '',
+			notes: formState?.notes?.value ?? '',
 		},
 	});
 
@@ -90,8 +114,10 @@ const NewTransactionDialog = ({
 	return (
 		<DialogContent className='sm:max-w-[425px]'>
 			<DialogHeader>
-				<DialogTitle>New Transaction</DialogTitle>
-				<DialogDescription>Create New Transaction</DialogDescription>
+				<DialogTitle>{title ?? 'New Transaction'}</DialogTitle>
+				<DialogDescription>
+					{description ?? 'Create New Transaction'}
+				</DialogDescription>
 			</DialogHeader>
 			<Form {...form}>
 				<form
@@ -106,7 +132,7 @@ const NewTransactionDialog = ({
 							<FormItem>
 								<FormLabel>Amount</FormLabel>
 								<FormControl>
-									<Input {...field} type='number' step='0.01' />
+									<Input {...field} type='number' step='0.01' autoFocus />
 								</FormControl>
 
 								<FormMessage />
@@ -165,6 +191,7 @@ const NewTransactionDialog = ({
 										checked={field.value}
 										onCheckedChange={field.onChange}
 										className='mt-0'
+										disabled={formState?.isExpense?.disabled}
 									/>
 								</FormControl>
 							</FormItem>
@@ -177,7 +204,10 @@ const NewTransactionDialog = ({
 							<FormItem className='col-span-2'>
 								<FormLabel>Cost Bucket</FormLabel>
 								<FormControl>
-									<Input {...field} />
+									<Input
+										{...field}
+										disabled={formState?.costBucket?.disabled}
+									/>
 								</FormControl>
 							</FormItem>
 						)}
@@ -189,7 +219,7 @@ const NewTransactionDialog = ({
 							<FormItem className='col-span-2'>
 								<FormLabel>Notes</FormLabel>
 								<FormControl>
-									<Textarea {...field} />
+									<Textarea {...field} disabled={formState?.notes?.disabled} />
 								</FormControl>
 							</FormItem>
 						)}
