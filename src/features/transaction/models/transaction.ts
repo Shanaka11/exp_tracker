@@ -8,6 +8,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema } from 'drizzle-zod';
 import { CostBucketTable } from './costBucket';
+import { z } from 'zod';
 
 export const TransactionTable = pgTable('transaction', {
 	id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
@@ -27,4 +28,8 @@ export type InsertTransactionDto = typeof TransactionTable.$inferInsert;
 export type TransactionDto = typeof TransactionTable.$inferSelect;
 
 // export const ReadCommentSchema = createSelectSchema(CommentTable);
-export const InsertTransactionSchema = createInsertSchema(TransactionTable);
+const InsertTransactionSchema_ = createInsertSchema(TransactionTable);
+export const InsertTransactionSchema = InsertTransactionSchema_.extend({
+	amount: z.coerce.number(),
+	costBucketId: z.coerce.number(),
+});

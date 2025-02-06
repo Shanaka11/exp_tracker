@@ -75,8 +75,9 @@ const NewTransactionDialog = ({
 				formState?.isExpense?.value === undefined
 					? true
 					: formState.isExpense.value,
-			costBucketId: formState?.costBucket?.value ?? undefined,
+			costBucketId: formState?.costBucket?.value ?? 0,
 			note: formState?.notes?.value ?? '',
+			user: '1',
 		},
 	});
 
@@ -208,8 +209,10 @@ const NewTransactionDialog = ({
 									<Input
 										{...field}
 										disabled={formState?.costBucket?.disabled}
+										type='number'
 									/>
 								</FormControl>
+								<FormMessage />
 							</FormItem>
 						)}
 					/>
