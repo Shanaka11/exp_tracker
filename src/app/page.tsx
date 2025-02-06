@@ -1,16 +1,15 @@
 import GoalsCard from '@/features/goals/components/GoalsCard';
 import CostDistributionCard from '@/features/transaction/components/CostDistributionCard';
 import NewTransactionCard from '@/features/transaction/components/NewTransactionCard';
+import SummaryCard from '@/features/transaction/components/SummaryCard';
 import TransactionList from '@/features/transaction/components/TransactionList';
 
 export default function Home() {
 	return (
 		<div className='grid grid-cols-1 md:grid-cols-3 gap-2 h-full grid-rows-[auto_auto_1fr]'>
-			<div className='col-span-1 md:col-span-3 bg-slate-50 rounded-sm p-2'>
-				1
-			</div>
+			<SummaryCard />
 			<NewTransactionCard />
-			<section className='grid grid-rows-2 flex-col gap-2 col-span-1 md:col-span-2 md:row-span-2'>
+			<section className='grid grid-rows-2 gap-2 col-span-1 md:col-span-2 md:row-span-2 grid-cols-subgrid'>
 				<GoalsCard />
 				<CostDistributionCard />
 			</section>
