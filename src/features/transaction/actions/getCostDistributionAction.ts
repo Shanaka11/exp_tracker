@@ -1,3 +1,4 @@
+'use server';
 export const getCostDistributionAction = async () => {
 	// return await
 	// Get Cost Buckets

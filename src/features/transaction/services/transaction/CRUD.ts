@@ -5,6 +5,7 @@ import {
 	TransactionTable,
 } from '../../models/transaction';
 import { eq } from 'drizzle-orm';
+import { generateDrizzleFilterPg } from 'drizzle-query-helper';
 
 export const createTransactionService = async (
 	transaction: InsertTransactionDto,
@@ -27,6 +28,7 @@ export const getTransactionService = async (
 		//@ts-expect-error types not defined
 		const filter = generateDrizzleFilterPg(TransactionTable, filterString);
 		if (filter !== null && filter !== undefined) {
+			//@ts-expect-error types not defined
 			query.where(filter);
 		}
 		return await query;
