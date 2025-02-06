@@ -1,0 +1,1 @@
+ALTER TABLE "cost_bucket" ADD COLUMN "user_id" varchar(40) NOT NULL;
