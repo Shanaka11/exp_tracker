@@ -1,12 +1,16 @@
 'use client';
+import { Button } from '@/components/ui/button';
 import {
 	ChartConfig,
 	ChartContainer,
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/components/ui/chart';
-import React from 'react';
+import { Plus } from 'lucide-react';
+import React, { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import NewCostBucketDialog from './NewCostBucketDialog';
+import { Dialog } from '@/components/ui/dialog';
 
 const chartData = [
 	{ costBucket: 'Groceries', amount: 186 },
@@ -24,6 +28,18 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 const CostDistributionChart = () => {
+	const [open, setOpen] = useState(false);
+	// If no data is available, show add cost buckets button
+	return (
+		<div className='h-full w-full grid items-center'>
+			<Button size='lg' onClick={() => setOpen(true)}>
+				<Plus /> Define Cost Buckets
+			</Button>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<NewCostBucketDialog />
+			</Dialog>
+		</div>
+	);
 	// Show the cost distribution for the top 10 cost buckets in a bar chart
 	return (
 		<ChartContainer config={chartConfig} className='min-h-[200px] w-full'>

@@ -27,7 +27,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
@@ -96,6 +96,7 @@ const NewTransactionDialog = ({
 			});
 			setIsLoading(false);
 		} catch (e: unknown) {
+			setIsLoading(false);
 			if (e instanceof Error) {
 				toast({
 					variant: 'destructive',
@@ -228,6 +229,7 @@ const NewTransactionDialog = ({
 			</Form>
 			<DialogFooter>
 				<Button type='submit' form='new-transaction-form' disabled={isLoading}>
+					{isLoading && <Loader2 className='animate-spin' />}
 					Add Transacaction
 				</Button>
 			</DialogFooter>
