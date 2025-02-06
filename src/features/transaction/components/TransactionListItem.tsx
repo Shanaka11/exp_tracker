@@ -1,10 +1,10 @@
 import React from 'react';
-import { Transaction } from '../actions/dummy';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import { TransactionDto } from '../models/transaction';
 
 type TransactionListItemProps = {
-	transaction: Transaction;
+	transaction: TransactionDto;
 };
 
 const TransactionListItem = ({ transaction }: TransactionListItemProps) => {
@@ -19,8 +19,7 @@ const TransactionListItem = ({ transaction }: TransactionListItemProps) => {
 			{/* <div className='rounded-full bg-black text-white w-14 text-center'>T</div> */}
 			<div>
 				<p className='text-lg'>{format(transaction.date, 'PPP')}</p>
-				<p className='text-sm'>{transaction.costBucket}</p>
-				<p className='text-sm'>{transaction.notes}</p>
+				<p className='text-sm'>{transaction.note}</p>
 			</div>
 			<div>
 				<p className='font-bold text-lg'>{transaction.amount.toFixed(2)}</p>

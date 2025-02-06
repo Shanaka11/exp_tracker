@@ -146,7 +146,7 @@ const NewTransactionDialog = ({
 						name='date'
 						render={({ field }) => (
 							<FormItem className='flex flex-col'>
-								<FormLabel className='mb-[10px]'>Date of birth</FormLabel>
+								<FormLabel className='mb-[10px]'>Date</FormLabel>
 								<Popover>
 									<PopoverTrigger asChild>
 										<FormControl>

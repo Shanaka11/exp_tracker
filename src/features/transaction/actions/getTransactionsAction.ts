@@ -1,6 +1,6 @@
 'use server';
-import { transactions } from './dummy';
+import { getRecentTransactionsUseCase } from '../useCases/transaction/getRecentTransactions';
 
 export const getTransactionsAction = async () => {
-	return transactions;
+	return await getRecentTransactionsUseCase('demoU');
 };
