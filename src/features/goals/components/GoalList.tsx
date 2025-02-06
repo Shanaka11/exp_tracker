@@ -21,7 +21,7 @@ const GoalList = ({ goals }: GoalListProps) => {
 			disabled: true,
 		},
 		costBucket: {
-			value: 'Goals',
+			value: 2,
 			disabled: true,
 		},
 		notes: {

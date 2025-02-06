@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { createTransactionSchema } from '../actions/dummy';
 import { z } from 'zod';
 import {
 	Form,
@@ -33,6 +32,7 @@ import { format } from 'date-fns';
 import { Calendar } from '@/components/ui/calendar';
 import { newTransactionAction } from '../actions/newTransactionAction';
 import { useToast } from '@/hooks/use-toast';
+import { InsertTransactionSchema } from '../models/transaction';
 
 export type NewTransactionDialogFormState = {
 	isExpense?: {
@@ -41,7 +41,7 @@ export type NewTransactionDialogFormState = {
 	};
 	costBucket?: {
 		disabled?: boolean;
-		value: string;
+		value: number;
 	};
 	notes?: {
 		disabled?: boolean;
@@ -66,8 +66,8 @@ const NewTransactionDialog = ({
 }: NewTransactionDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
-	const form = useForm<z.infer<typeof createTransactionSchema>>({
-		resolver: zodResolver(createTransactionSchema),
+	const form = useForm<z.infer<typeof InsertTransactionSchema>>({
+		resolver: zodResolver(InsertTransactionSchema),
 		defaultValues: {
 			amount: transactionAmount,
 			date: new Date(),
@@ -75,13 +75,13 @@ const NewTransactionDialog = ({
 				formState?.isExpense?.value === undefined
 					? true
 					: formState.isExpense.value,
-			costBucket: formState?.costBucket?.value ?? '',
-			notes: formState?.notes?.value ?? '',
+			costBucketId: formState?.costBucket?.value ?? undefined,
+			note: formState?.notes?.value ?? '',
 		},
 	});
 
 	const handleOnSubmit = async (
-		values: z.infer<typeof createTransactionSchema>
+		values: z.infer<typeof InsertTransactionSchema>
 	) => {
 		try {
 			setIsLoading(true);
@@ -200,7 +200,7 @@ const NewTransactionDialog = ({
 					/>
 					<FormField
 						control={form.control}
-						name='costBucket'
+						name='costBucketId'
 						render={({ field }) => (
 							<FormItem className='col-span-2'>
 								<FormLabel>Cost Bucket</FormLabel>
@@ -215,7 +215,7 @@ const NewTransactionDialog = ({
 					/>
 					<FormField
 						control={form.control}
-						name='notes'
+						name='note'
 						render={({ field }) => (
 							<FormItem className='col-span-2'>
 								<FormLabel>Notes</FormLabel>

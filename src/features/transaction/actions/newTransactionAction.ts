@@ -1,14 +1,10 @@
 'use server';
 
-import { createTransactionSchemaType, transactions } from './dummy';
+import { InsertTransactionDto } from '../models/transaction';
+import { createTransactionUseCase } from '../useCases/transaction/CRUD';
 
 export const newTransactionAction = async (
-	transaction: createTransactionSchemaType
+	transaction: InsertTransactionDto
 ) => {
-	//In the new transaction use case when the bucket is Goal then the transaction should update the allocation for the goal as well
-	const newTransaction = {
-		...transaction,
-		id: transactions.length + 1,
-	};
-	transactions.push(newTransaction);
+	return await createTransactionUseCase(transaction, 'demoU');
 };

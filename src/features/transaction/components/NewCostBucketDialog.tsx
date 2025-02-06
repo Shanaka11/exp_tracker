@@ -31,7 +31,6 @@ const NewCostBucketDialog = () => {
 	const form = useForm<z.infer<typeof CreateCostBucketSchema>>({
 		resolver: zodResolver(CreateCostBucketSchema),
 		defaultValues: {
-			icon: '',
 			name: '',
 			description: '',
 			user: '',
@@ -88,23 +87,10 @@ const NewCostBucketDialog = () => {
 						control={form.control}
 						name='name'
 						render={({ field }) => (
-							<FormItem>
+							<FormItem className='col-span-2'>
 								<FormLabel>Title</FormLabel>
 								<FormControl>
 									<Input {...field} autoFocus />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name='icon'
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Icon</FormLabel>
-								<FormControl>
-									<Input {...field} type='text' />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
