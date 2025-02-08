@@ -5,7 +5,7 @@ import {
 	TransactionTable,
 } from '../../models/transaction';
 import { eq } from 'drizzle-orm';
-import { generateDrizzleFilterPg } from 'drizzle-query-helper';
+import { generateDrizzleFilter } from 'drizzle-query-helper';
 
 export const createTransactionService = async (
 	transaction: InsertTransactionDto,
@@ -23,10 +23,10 @@ export const getTransactionService = async (
 	connection: PostgresJsDatabase<Record<string, never>>,
 	filterString?: string
 ) => {
-	const query = connection.select().from(TransactionTable).$dynamic();
 	if (filterString) {
+		const query = connection.select().from(TransactionTable).$dynamic();
 		//@ts-expect-error types not defined
-		const filter = generateDrizzleFilterPg(TransactionTable, filterString);
+		const filter = generateDrizzleFilter(TransactionTable, filterString);
 		if (filter !== null && filter !== undefined) {
 			//@ts-expect-error types not defined
 			query.where(filter);

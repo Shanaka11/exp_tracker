@@ -8,11 +8,11 @@ export const getTransactionSummaryUseCase = async (
 ) => {
 	const expense = await getSumTransactionAmountService(
 		connection,
-		`and(eq(user,${userId}),eq(isExpense,${true}))`
+		`and(eq(user,${userId}),eq(isExpense,true))`
 	);
 	const income = await getSumTransactionAmountService(
 		connection,
-		`and(eq(user,${userId}),eq(isExpense,${false}))`
+		`and(eq(user,${userId}),eq(isExpense,false))`
 	);
 	const allocated = 0;
 
