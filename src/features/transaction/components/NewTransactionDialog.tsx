@@ -33,6 +33,8 @@ import { Calendar } from '@/components/ui/calendar';
 import { newTransactionAction } from '../actions/newTransactionAction';
 import { useToast } from '@/hooks/use-toast';
 import { InsertTransactionSchema } from '../models/transaction';
+import CostBucketLov from './CostBucketLov';
+import { CostBucketDto } from '../models/costBucket';
 
 export type NewTransactionDialogFormState = {
 	isExpense?: {
@@ -65,6 +67,9 @@ const NewTransactionDialog = ({
 	description,
 }: NewTransactionDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
+	const [selectedCostBucketId, setSelectedCostBucketId] = useState<
+		number | null
+	>(null);
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof InsertTransactionSchema>>({
 		resolver: zodResolver(InsertTransactionSchema),
@@ -80,6 +85,16 @@ const NewTransactionDialog = ({
 			user: '1',
 		},
 	});
+
+	const onCostBucketSelect = (costBucket: CostBucketDto | null) => {
+		if (costBucket === null) {
+			setSelectedCostBucketId(null);
+			form.resetField('costBucketId');
+			return;
+		}
+		setSelectedCostBucketId(costBucket.id);
+		form.setValue('costBucketId', costBucket.id);
+	};
 
 	const handleOnSubmit = async (
 		values: z.infer<typeof InsertTransactionSchema>
@@ -199,22 +214,10 @@ const NewTransactionDialog = ({
 							</FormItem>
 						)}
 					/>
-					<FormField
-						control={form.control}
-						name='costBucketId'
-						render={({ field }) => (
-							<FormItem className='col-span-2'>
-								<FormLabel>Cost Bucket</FormLabel>
-								<FormControl>
-									<Input
-										{...field}
-										disabled={formState?.costBucket?.disabled}
-										type='number'
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
+					<CostBucketLov
+						onCostBucketSelect={onCostBucketSelect}
+						selectedCostBucketId={selectedCostBucketId}
+						className='col-span-2'
 					/>
 					<FormField
 						control={form.control}

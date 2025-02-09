@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
+import Providers from '@/providers/Providers';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -28,12 +29,14 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh grid grid-rows-[40px_1fr] grid-cols-[40px_1fr]`}
 			>
-				<nav className='h-10 bg-green-300 col-span-2'>App</nav>
-				<nav className='w-10 bg-orange-300'>Side</nav>
-				<main className='py-4 px-4 bg-slate-200 h-full overflow-hidden'>
-					{children}
-				</main>
-				<Toaster />
+				<Providers>
+					<nav className='h-10 bg-green-300 col-span-2'>App</nav>
+					<nav className='w-10 bg-orange-300'>Side</nav>
+					<main className='py-4 px-4 bg-slate-200 h-full overflow-hidden'>
+						{children}
+					</main>
+					<Toaster />
+				</Providers>
 			</body>
 		</html>
 	);
