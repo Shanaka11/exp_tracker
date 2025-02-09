@@ -55,7 +55,7 @@ const CostBucketLov = ({
 					variant='outline'
 					role='combobox'
 					aria-expanded={open}
-					className={cn(`w-[200px] justify-between`, className)}
+					className={cn(`justify-between`, className)}
 					disabled={disabled}
 				>
 					{selectedCostBucketId
@@ -68,9 +68,9 @@ const CostBucketLov = ({
 			</PopoverTrigger>
 			<PopoverContent className='w-[200px] p-0'>
 				<Command>
-					<CommandInput placeholder='Search framework...' />
+					<CommandInput placeholder='Search Cost Bucket...' />
 					<CommandList>
-						<CommandEmpty>No framework found.</CommandEmpty>
+						<CommandEmpty>No Cost Bucket found.</CommandEmpty>
 						<CommandGroup>
 							{costBuckets?.map((costBucket) => (
 								<CommandItem
