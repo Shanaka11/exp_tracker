@@ -1,6 +1,8 @@
 'use server';
+import { getCurrentUserServer } from '@/features/auth/util/getCurrentUserServer';
 import { getRecentTransactionsUseCase } from '../useCases/transaction/getRecentTransactions';
 
 export const getTransactionsAction = async () => {
-	return await getRecentTransactionsUseCase('demoU');
+	const user = getCurrentUserServer();
+	return await getRecentTransactionsUseCase(user);
 };

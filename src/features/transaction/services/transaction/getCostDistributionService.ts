@@ -1,6 +1,7 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { TransactionTable } from '../../models/transaction';
 import { eq, sum } from 'drizzle-orm';
+import { CostBucketTable } from '../../models/costBucket';
 
 export const getCostDistributionService = async (
 	userId: string,
@@ -8,10 +9,14 @@ export const getCostDistributionService = async (
 ) => {
 	return await connection
 		.select({
-			costBucketId: TransactionTable.costBucketId,
+			costBucketName: CostBucketTable.name,
 			total: sum(TransactionTable.amount),
 		})
 		.from(TransactionTable)
+		.innerJoin(
+			CostBucketTable,
+			eq(TransactionTable.costBucketId, CostBucketTable.id)
+		)
 		.where(eq(TransactionTable.user, userId))
-		.groupBy(TransactionTable.costBucketId);
+		.groupBy(CostBucketTable.name);
 };

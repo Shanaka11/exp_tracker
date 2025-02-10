@@ -1,7 +1,9 @@
 'use server';
 
+import { getCurrentUserServer } from '@/features/auth/util/getCurrentUserServer';
 import { getTransactionSummaryUseCase } from '../useCases/transaction/getTransactionSummaryUseCase';
 
 export const getTransactionSummaryAction = async () => {
-	return await getTransactionSummaryUseCase('demoU');
+	const user = getCurrentUserServer();
+	return await getTransactionSummaryUseCase(user);
 };
