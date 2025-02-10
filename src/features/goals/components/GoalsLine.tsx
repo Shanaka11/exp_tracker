@@ -5,6 +5,12 @@ import React from 'react';
 import { Goal } from '../actions/dummy';
 import { dayCounter } from '@/lib/daycounter';
 import DynamicIcon from '@/features/Icons/components/DynamicIcon';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 type GoalsLineProps = {
 	goal: Goal;
@@ -23,17 +29,33 @@ const GoalsLine = ({ goal, currentDate, allocateFunds }: GoalsLineProps) => {
 				<p>{dayCounter(goal.targetDate, currentDate)}</p>
 			</div>
 			<div className='flex gap-2 items-center'>
-				<Progress
-					value={(goal.allocatedAmount * 100) / goal.targetAmount}
-					title={`${(goal.allocatedAmount * 100) / goal.targetAmount}%`}
-				/>
-				<Button
-					size='icon'
-					title='Allocate Funds'
-					onClick={() => allocateFunds(`ALLOCATED_TO_GOAL-${goal.id}`)}
-				>
-					<HandCoins />
-				</Button>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Progress
+								value={(goal.allocatedAmount * 100) / goal.targetAmount}
+							/>
+						</TooltipTrigger>
+						<TooltipContent>
+							{`${(goal.allocatedAmount * 100) / goal.targetAmount}%`}
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button
+								size='icon'
+								onClick={() => allocateFunds(`ALLOCATED_TO_GOAL-${goal.id}`)}
+							>
+								<HandCoins />
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>
+							<p>Allocate Funds</p>
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			</div>
 		</li>
 	);
