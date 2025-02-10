@@ -4,7 +4,6 @@ import {
 	Command,
 	CommandEmpty,
 	CommandGroup,
-	CommandInput,
 	CommandItem,
 	CommandList,
 } from '@/components/ui/command';
@@ -66,9 +65,8 @@ const CostBucketLov = ({
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent className='w-[200px] p-0'>
+			<PopoverContent className='w-[200px] p-0 pointer-events-auto'>
 				<Command>
-					<CommandInput placeholder='Search Cost Bucket...' />
 					<CommandList>
 						<CommandEmpty>No Cost Bucket found.</CommandEmpty>
 						<CommandGroup>

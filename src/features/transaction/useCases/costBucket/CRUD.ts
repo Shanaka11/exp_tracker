@@ -11,6 +11,10 @@ export const createCostBucketUseCase = async (
 	userId: string,
 	connection: PostgresJsDatabase<Record<string, never>> = db
 ) => {
+	// Cost bucket Goal is a system bucket, users cannot enter it
+	if (costBucket.name === 'Goal') {
+		throw new Error('Creating a cost bucket with the name Goal is not allowed');
+	}
 	// Check if a cost bucket with the same name for the same user already exists
 	const existCostBucket = await getCostBucketService(
 		connection,

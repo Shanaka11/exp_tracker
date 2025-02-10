@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	DialogContent,
@@ -49,6 +49,7 @@ export type NewTransactionDialogFormState = {
 		disabled?: boolean;
 		value: string;
 	};
+	open: boolean; // To handle the dialog open state in the same state
 };
 
 type NewTransactionDialogProps = {
@@ -85,6 +86,14 @@ const NewTransactionDialog = ({
 			user: '1',
 		},
 	});
+
+	useEffect(() => {
+		if (formState?.open) {
+			form.reset();
+			setSelectedCostBucketId(formState.costBucket?.value ?? null);
+			form.setValue('costBucketId', formState.costBucket?.value ?? 0);
+		}
+	}, [formState?.open, form, formState?.costBucket?.value]);
 
 	const onCostBucketSelect = (costBucket: CostBucketDto | null) => {
 		if (costBucket === null) {
@@ -218,6 +227,7 @@ const NewTransactionDialog = ({
 						onCostBucketSelect={onCostBucketSelect}
 						selectedCostBucketId={selectedCostBucketId}
 						className='col-span-2'
+						disabled={formState?.costBucket?.disabled}
 					/>
 					<FormField
 						control={form.control}

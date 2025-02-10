@@ -7,6 +7,8 @@ import NewTransactionDialog, {
 	NewTransactionDialogFormState,
 } from '@/features/transaction/components/NewTransactionDialog';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { getCostBucketGoalAction } from '@/features/transaction/actions/getCostBucketGoalAction';
 
 export type GoalListProps = {
 	goals: Goal[];
@@ -14,38 +16,61 @@ export type GoalListProps = {
 
 const GoalList = ({ goals }: GoalListProps) => {
 	const [currentDate] = useState(new Date());
-	const [open, setOpen] = useState(false);
+
+	const { data: costBucketGoal } = useQuery({
+		queryKey: ['costBucketGoal'],
+		queryFn: getCostBucketGoalAction,
+		staleTime: Infinity,
+	});
 	const [formState, setFormState] = useState<NewTransactionDialogFormState>({
 		isExpense: {
 			value: true,
 			disabled: true,
 		},
 		costBucket: {
-			value: 2,
+			value: 1,
 			disabled: true,
 		},
 		notes: {
 			value: '0',
 			disabled: true,
 		},
+		open: false,
 	});
+
 	const router = useRouter();
 
 	const handleAllocateFunds = (note: string) => {
-		if (formState.notes) {
-			setFormState({
-				...formState,
-				notes: {
-					...formState.notes,
-					value: note ?? formState.notes.value,
-				},
-			});
-		}
-		setOpen(true);
+		//if (formState.current.notes) {
+		setFormState({
+			...formState,
+			costBucket: {
+				...formState.costBucket,
+				value:
+					costBucketGoal && costBucketGoal.length > 0
+						? costBucketGoal[0].id
+						: 1,
+			},
+			notes: {
+				...formState.notes,
+				value: note ?? formState.notes?.value ?? null,
+			},
+			open: true,
+		});
 	};
 	const handleAddNewTransactionSuccess = () => {
-		setOpen(false);
+		setFormState({
+			...formState,
+			open: false,
+		});
 		router.refresh();
+	};
+
+	const handleOpenChange = (open: boolean) => {
+		setFormState({
+			...formState,
+			open,
+		});
 	};
 	return (
 		<>
@@ -59,7 +84,7 @@ const GoalList = ({ goals }: GoalListProps) => {
 					/>
 				))}
 			</ol>
-			<Dialog open={open} onOpenChange={setOpen}>
+			<Dialog open={formState.open} onOpenChange={handleOpenChange}>
 				<NewTransactionDialog
 					handleSaveSuccess={handleAddNewTransactionSuccess}
 					transactionAmount={0}
