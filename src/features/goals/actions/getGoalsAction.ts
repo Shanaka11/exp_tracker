@@ -1,6 +1,8 @@
 'use server';
-import { goals } from './dummy';
+import { getCurrentUserServer } from '@/features/auth/util/getCurrentUserServer';
+import { getUserGoalUseCase } from '../useCases/goal/getUserGoalsUseCase';
 
 export const getGoalsAction = async () => {
-	return goals;
+	const user = getCurrentUserServer();
+	return await getUserGoalUseCase(user);
 };

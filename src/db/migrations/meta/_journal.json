@@ -57,6 +57,13 @@
       "when": 1738840686878,
       "tag": "0007_fresh_junta",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1739237355173,
+      "tag": "0008_brave_james_howlett",
+      "breakpoints": true
     }
   ]
 }

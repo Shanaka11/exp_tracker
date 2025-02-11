@@ -9,6 +9,7 @@ import NewTransactionDialog, {
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getCostBucketGoalAction } from '@/features/transaction/actions/getCostBucketGoalAction';
+import CreateNewGoalButton from './CreateNewGoalButton';
 
 export type GoalListProps = {
 	goals: Goal[];
@@ -72,6 +73,9 @@ const GoalList = ({ goals }: GoalListProps) => {
 			open,
 		});
 	};
+	if (goals.length === 0) {
+		return <CreateNewGoalButton />;
+	}
 	return (
 		<>
 			<ol className='overflow-auto h-full'>
