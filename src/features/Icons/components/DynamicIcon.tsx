@@ -12,8 +12,23 @@ import {
 } from 'lucide-react';
 import React from 'react';
 
+export const Icons = [
+	'house',
+	'car',
+	'phone',
+	'computer',
+	'degree',
+	'cable',
+	'vacation',
+	'travel',
+	'food',
+	'animal',
+] as const;
+
+export type IconType = (typeof Icons)[number];
+
 type DynamicIconProps = {
-	iconName: string;
+	iconName: IconType | string;
 };
 
 const DynamicIcon = ({ iconName }: DynamicIconProps) => {

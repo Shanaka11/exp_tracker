@@ -32,8 +32,15 @@ import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import IconSelector from '@/features/Icons/components/IconSelector';
+import { IconType } from '@/features/Icons/components/DynamicIcon';
 
-const CreateNewGoalDialog = () => {
+type CreateNewGoalDialogProps = {
+	handleSaveSuccess: () => void;
+};
+
+const CreateNewGoalDialog = ({
+	handleSaveSuccess,
+}: CreateNewGoalDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof CreateGoalSchema>>({
@@ -50,6 +57,8 @@ const CreateNewGoalDialog = () => {
 		},
 	});
 
+	const [selectedIcon, setSelectedIcon] = useState<IconType>('house');
+
 	const handleOnSubmit = async (values: z.infer<typeof CreateGoalSchema>) => {
 		try {
 			setIsLoading(true);
@@ -58,7 +67,8 @@ const CreateNewGoalDialog = () => {
 			});
 			await createGoalAction(values);
 			form.reset();
-			// handleSaveSuccess();
+			setSelectedIcon('house');
+			handleSaveSuccess();
 			toast({
 				title: 'Goal Added successfully',
 			});
@@ -80,11 +90,16 @@ const CreateNewGoalDialog = () => {
 		}
 	};
 
+	const handleIconSelect = (icon: IconType) => {
+		setSelectedIcon(icon);
+		form.setValue('icon', icon);
+	};
+
 	return (
 		<DialogContent className='sm:max-w-[425px]'>
 			<DialogHeader>
-				<DialogTitle>New Cost Bucket</DialogTitle>
-				<DialogDescription>Create New Cost Bucket</DialogDescription>
+				<DialogTitle>New Goal</DialogTitle>
+				<DialogDescription>Create New Goal</DialogDescription>
 			</DialogHeader>
 			<Form {...form}>
 				<form
@@ -135,10 +150,9 @@ const CreateNewGoalDialog = () => {
 											mode='single'
 											selected={field.value}
 											onSelect={field.onChange}
-											disabled={(date) =>
-												date > new Date() || date < new Date('1900-01-01')
-											}
+											disabled={(date) => date < new Date('1900-01-01')}
 											initialFocus
+											className='pointer-events-auto'
 										/>
 									</PopoverContent>
 								</Popover>
@@ -146,8 +160,13 @@ const CreateNewGoalDialog = () => {
 							</FormItem>
 						)}
 					/>
-					<IconSelector />
-
+					<div className='flex flex-col gap-2'>
+						<FormLabel className='mb-[10px]'>Icon</FormLabel>
+						<IconSelector
+							selectedIcon={selectedIcon}
+							onIconSelect={handleIconSelect}
+						/>
+					</div>
 					<FormField
 						control={form.control}
 						name='targetAmount'
@@ -177,7 +196,7 @@ const CreateNewGoalDialog = () => {
 				</form>
 			</Form>
 			<DialogFooter>
-				<Button type='submit' form='new-cost_bucket-form' disabled={isLoading}>
+				<Button type='submit' form='new-goal-form' disabled={isLoading}>
 					{isLoading && <Loader2 className='animate-spin' />}
 					Add Goal
 				</Button>

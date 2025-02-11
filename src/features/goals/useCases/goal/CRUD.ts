@@ -8,6 +8,8 @@ export const createGoalUseCase = async (
 	userId: string,
 	connection: PostgresJsDatabase<Record<string, never>> = db
 ) => {
+	// If a goal with the same name exist for the same user, throw an error
+	// If a goal comes with an allocated amount, then create a transaction for it
 	goal.user = userId;
 	const currDate = new Date();
 	goal.createdAt = currDate;

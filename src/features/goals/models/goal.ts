@@ -1,5 +1,6 @@
 import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema } from 'drizzle-zod';
+import { z } from 'zod';
 
 export const GoalTable = pgTable('goal', {
 	id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
@@ -16,4 +17,13 @@ export const GoalTable = pgTable('goal', {
 export type InsertGoalDto = typeof GoalTable.$inferInsert;
 export type GoalDto = typeof GoalTable.$inferSelect;
 
-export const CreateGoalSchema = createInsertSchema(GoalTable);
+const CreateGoalSchema_ = createInsertSchema(GoalTable);
+export const CreateGoalSchema = CreateGoalSchema_.extend({
+	title: z.string().min(1, { message: 'Title is required' }),
+	targetAmount: z.coerce
+		.number()
+		.min(1, { message: 'Target amount must be greater than 0' }),
+	allocatedAmount: z.coerce
+		.number()
+		.min(0, { message: 'Allocated amount must be greater than or equal to 0' }),
+});
