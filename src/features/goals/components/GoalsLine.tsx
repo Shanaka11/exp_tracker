@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { HandCoins } from 'lucide-react';
 import React from 'react';
-import { Goal } from '../actions/dummy';
 import { dayCounter } from '@/lib/daycounter';
 import DynamicIcon from '@/features/Icons/components/DynamicIcon';
 import {
@@ -11,9 +10,10 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { GoalDto } from '../models/goal';
 
 type GoalsLineProps = {
-	goal: Goal;
+	goal: GoalDto;
 	currentDate: Date;
 	allocateFunds: (note: string) => void;
 };

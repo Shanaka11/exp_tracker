@@ -1,6 +1,5 @@
 'use client';
 import React, { useState } from 'react';
-import { Goal } from '../actions/dummy';
 import GoalsLine from './GoalsLine';
 import { Dialog } from '@/components/ui/dialog';
 import NewTransactionDialog, {
@@ -10,9 +9,10 @@ import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { getCostBucketGoalAction } from '@/features/transaction/actions/getCostBucketGoalAction';
 import CreateNewGoalButton from './CreateNewGoalButton';
+import { GoalDto } from '../models/goal';
 
 export type GoalListProps = {
-	goals: Goal[];
+	goals: GoalDto[];
 };
 
 const GoalList = ({ goals }: GoalListProps) => {
