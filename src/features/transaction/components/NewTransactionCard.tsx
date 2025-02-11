@@ -46,7 +46,7 @@ const NewTransactionCard = () => {
 			transactionInput.current.focus();
 		}
 		setTransactionAmount(null);
-		router.refresh();
+		setTimeout(() => router.refresh(), 1000);
 	};
 
 	return (

@@ -11,6 +11,7 @@ const CreateNewGoalButton = () => {
 	const router = useRouter();
 
 	const handleCreateNewGoalOnSuccess = () => {
+		setOpen(false);
 		router.refresh();
 	};
 

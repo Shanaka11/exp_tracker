@@ -29,7 +29,7 @@ const GoalList = ({ goals }: GoalListProps) => {
 			disabled: true,
 		},
 		costBucket: {
-			value: 1,
+			value: 0,
 			disabled: true,
 		},
 		notes: {
@@ -54,7 +54,7 @@ const GoalList = ({ goals }: GoalListProps) => {
 			},
 			notes: {
 				...formState.notes,
-				value: note ?? formState.notes?.value ?? null,
+				value: note,
 			},
 			open: true,
 		});
@@ -64,7 +64,7 @@ const GoalList = ({ goals }: GoalListProps) => {
 			...formState,
 			open: false,
 		});
-		router.refresh();
+		setTimeout(() => router.refresh(), 1000);
 	};
 
 	const handleOpenChange = (open: boolean) => {

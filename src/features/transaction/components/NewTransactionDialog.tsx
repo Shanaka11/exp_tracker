@@ -92,8 +92,14 @@ const NewTransactionDialog = ({
 			form.reset();
 			setSelectedCostBucketId(formState.costBucket?.value ?? null);
 			form.setValue('costBucketId', formState.costBucket?.value ?? 0);
+			form.setValue('note', formState.notes?.value ?? '');
 		}
-	}, [formState?.open, form, formState?.costBucket?.value]);
+	}, [
+		formState?.open,
+		form,
+		formState?.costBucket?.value,
+		formState?.notes?.value,
+	]);
 
 	const onCostBucketSelect = (costBucket: CostBucketDto | null) => {
 		if (costBucket === null) {
@@ -115,11 +121,11 @@ const NewTransactionDialog = ({
 			});
 			await newTransactionAction(values);
 			form.reset();
-			handleSaveSuccess();
 			toast({
 				title: 'Transaction Added successfully',
 			});
 			setIsLoading(false);
+			handleSaveSuccess();
 		} catch (e: unknown) {
 			setIsLoading(false);
 			if (e instanceof Error) {

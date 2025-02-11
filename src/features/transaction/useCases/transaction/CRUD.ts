@@ -2,15 +2,45 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { InsertTransactionDto } from '../../models/transaction';
 import { db } from '@/db/drizzle';
 import { createTransactionService } from '../../services/transaction/CRUD';
+import { updateGoalUseCase_ } from '@/features/goals/useCases/goal/CRUD';
+import { getGoalFromIdUseCase } from '@/features/goals/useCases/goal/getGoalFromIdUsecase';
+
+export const createTransactionUseCase_ = async (
+	transaction: InsertTransactionDto,
+	userId: string,
+	connection: PostgresJsDatabase<Record<string, never>> = db
+) => {
+	// If the cost bucket is goal then update the goal allocated amount
+	transaction.user = userId;
+	const currDate = new Date();
+	transaction.createdAt = currDate;
+	transaction.updatedAt = currDate;
+	const newTransaction = await createTransactionService(
+		transaction,
+		connection
+	);
+
+	if (transaction.note.startsWith(`ALLOCATED_TO_GOAL-`)) {
+		console.log('Allocated to goal');
+		// Then this is allocated to a goal
+		const goalId = transaction.note.split('-')[1];
+		console.log('Goal id:', goalId);
+		const goal = await getGoalFromIdUseCase(Number(goalId), connection);
+		console.log('Goal:', goal);
+		goal.allocatedAmount += transaction.amount;
+		console.log('Goal:', goal);
+		await updateGoalUseCase_(goal, connection);
+	}
+
+	return newTransaction;
+};
 
 export const createTransactionUseCase = async (
 	transaction: InsertTransactionDto,
 	userId: string,
 	connection: PostgresJsDatabase<Record<string, never>> = db
 ) => {
-	transaction.user = userId;
-	const currDate = new Date();
-	transaction.createdAt = currDate;
-	transaction.updatedAt = currDate;
-	await createTransactionService(transaction, connection);
+	connection.transaction(async (tx) => {
+		return createTransactionUseCase_(transaction, userId, tx);
+	});
 };
