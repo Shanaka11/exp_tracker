@@ -25,7 +25,8 @@ export const TransactionTable = pgTable('transaction', {
 });
 
 export type InsertTransactionDto = typeof TransactionTable.$inferInsert;
-export type TransactionDto = typeof TransactionTable.$inferSelect;
+type TransactionDto_ = typeof TransactionTable.$inferSelect;
+export type TransactionDto = TransactionDto_ & { costBucketName?: string };
 
 // export const ReadCommentSchema = createSelectSchema(CommentTable);
 const InsertTransactionSchema_ = createInsertSchema(TransactionTable);

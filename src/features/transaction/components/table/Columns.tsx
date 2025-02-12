@@ -51,7 +51,7 @@ export const transactionTableColumns: ColumnDef<TransactionDto>[] = [
 		cell: ({ row }) => <Switch checked={row.getValue('isExpense')} disabled />,
 	},
 	{
-		accessorKey: 'costBucketId',
+		accessorKey: 'costBucketName',
 		header: 'Cost Bucket',
 	},
 ];
