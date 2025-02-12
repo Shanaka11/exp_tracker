@@ -21,14 +21,10 @@ export const createTransactionUseCase_ = async (
 	);
 
 	if (transaction.note.startsWith(`ALLOCATED_TO_GOAL-`)) {
-		console.log('Allocated to goal');
 		// Then this is allocated to a goal
 		const goalId = transaction.note.split('-')[1];
-		console.log('Goal id:', goalId);
 		const goal = await getGoalFromIdUseCase(Number(goalId), connection);
-		console.log('Goal:', goal);
 		goal.allocatedAmount += transaction.amount;
-		console.log('Goal:', goal);
 		await updateGoalUseCase_(goal, connection);
 	}
 

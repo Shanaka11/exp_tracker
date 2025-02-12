@@ -7,7 +7,6 @@ export const getGoalService = async (
 	connection: PostgresJsDatabase<Record<string, never>>,
 	filterString?: string
 ) => {
-	console.log(filterString);
 	const query = connection.select().from(GoalTable).$dynamic();
 	if (filterString) {
 		//@ts-expect-error types not defined

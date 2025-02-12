@@ -7,6 +7,5 @@ export const getGoalFromIdUseCase = async (
 	connection: PostgresJsDatabase<Record<string, never>> = db
 ) => {
 	const result = await getGoalService(connection, `eq(id,${id})`);
-	// console.log(result);
 	return result[0];
 };
