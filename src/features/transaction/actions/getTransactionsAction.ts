@@ -1,8 +1,13 @@
 'use server';
 import { getCurrentUserServer } from '@/features/auth/util/getCurrentUserServer';
 import { getRecentTransactionsUseCase } from '../useCases/transaction/getRecentTransactions';
+import { getAllTransactionsUseCase } from '../useCases/transaction/getAllTransactionsUseCase';
 
-export const getTransactionsAction = async () => {
+export const getTransactionsAction = async (recent: boolean = true) => {
 	const user = getCurrentUserServer();
-	return await getRecentTransactionsUseCase(user);
+	if (recent) {
+		return await getRecentTransactionsUseCase(user);
+	} else {
+		return await getAllTransactionsUseCase(user);
+	}
 };

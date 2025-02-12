@@ -4,7 +4,7 @@ import {
 	TransactionDto,
 	TransactionTable,
 } from '../../models/transaction';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { generateDrizzleFilter } from 'drizzle-query-helper';
 
 export const createTransactionService = async (
@@ -31,7 +31,7 @@ export const getTransactionService = async (
 			//@ts-expect-error types not defined
 			query.where(filter);
 		}
-		return await query;
+		return await query.orderBy(desc(TransactionTable.date));
 	}
 };
 
