@@ -37,6 +37,7 @@ const GoalList = ({ goals }: GoalListProps) => {
 			disabled: true,
 		},
 		open: false,
+		operation: 'new',
 	});
 
 	const router = useRouter();

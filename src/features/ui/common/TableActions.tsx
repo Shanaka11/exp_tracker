@@ -8,6 +8,7 @@ type TableActionsProps = {
 	setShowFilter: Dispatch<React.SetStateAction<boolean>>;
 	showFilter: boolean;
 	handleNewOnClick: () => void;
+	handleEditOnClick: () => void;
 };
 
 const TableActions = ({
@@ -15,13 +16,18 @@ const TableActions = ({
 	setShowFilter,
 	showFilter,
 	handleNewOnClick,
+	handleEditOnClick,
 }: TableActionsProps) => {
 	return (
 		<div className='flex gap-2 mb-2'>
 			<Button size='icon' onClick={handleNewOnClick}>
 				<Plus />
 			</Button>
-			<Button size='icon' disabled={selectedItemLength !== 1}>
+			<Button
+				size='icon'
+				disabled={selectedItemLength !== 1}
+				onClick={handleEditOnClick}
+			>
 				<Pencil />
 			</Button>
 			<Button size='icon' disabled={selectedItemLength === 0}>

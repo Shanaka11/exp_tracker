@@ -35,8 +35,21 @@ import { useToast } from '@/hooks/use-toast';
 import { InsertTransactionSchema } from '../models/transaction';
 import CostBucketLov from './CostBucketLov';
 import { CostBucketDto } from '../models/costBucket';
+import { updateTransactionAction } from '../actions/updateTransactionAction';
 
 export type NewTransactionDialogFormState = {
+	id?: {
+		disabled?: boolean;
+		value: number;
+	};
+	amount?: {
+		disabled?: boolean;
+		value: number;
+	};
+	date?: {
+		disabled?: boolean;
+		value: Date;
+	};
 	isExpense?: {
 		disabled?: boolean;
 		value: boolean;
@@ -49,7 +62,20 @@ export type NewTransactionDialogFormState = {
 		disabled?: boolean;
 		value: string;
 	};
+	createdAt?: {
+		disabled?: boolean;
+		value: Date;
+	};
+	updatedAt?: {
+		disabled?: boolean;
+		value: Date;
+	};
+	user?: {
+		disabled?: boolean;
+		value: string;
+	};
 	open: boolean; // To handle the dialog open state in the same state
+	operation: 'edit' | 'new'; // Tells the dialog if it should be in edit mode or new mode
 };
 
 type NewTransactionDialogProps = {
@@ -93,12 +119,18 @@ const NewTransactionDialog = ({
 			setSelectedCostBucketId(formState.costBucket?.value ?? null);
 			form.setValue('costBucketId', formState.costBucket?.value ?? 0);
 			form.setValue('note', formState.notes?.value ?? '');
+			form.setValue('isExpense', formState.isExpense?.value ?? true);
+			form.setValue('amount', formState.amount?.value ?? 0);
+			form.setValue('date', formState.date?.value ?? new Date());
 		}
 	}, [
 		formState?.open,
 		form,
 		formState?.costBucket?.value,
 		formState?.notes?.value,
+		formState?.isExpense?.value,
+		formState?.amount?.value,
+		formState?.date?.value,
 	]);
 
 	const onCostBucketSelect = (costBucket: CostBucketDto | null) => {
@@ -116,16 +148,45 @@ const NewTransactionDialog = ({
 	) => {
 		try {
 			setIsLoading(true);
-			toast({
-				title: 'Transaction being added',
-			});
-			// Trunc the time
-			values.date.setUTCHours(0, 0, 0, 0);
-			await newTransactionAction(values);
-			form.reset();
-			toast({
-				title: 'Transaction Added successfully',
-			});
+			if (formState?.operation === 'new') {
+				toast({
+					title: 'Transaction being added',
+				});
+				// Trunc the time
+				values.date.setUTCHours(0, 0, 0, 0);
+				await newTransactionAction(values);
+				form.reset();
+				toast({
+					title: 'Transaction Added successfully',
+				});
+			} else if (formState?.operation === 'edit') {
+				toast({
+					title: 'Transaction being updated',
+				});
+				values.date.setUTCHours(0, 0, 0, 0);
+				if (
+					formState.createdAt === undefined ||
+					formState.updatedAt === undefined ||
+					formState.user === undefined
+				) {
+					return;
+				}
+				await updateTransactionAction({
+					id: formState.id?.value ?? 0,
+					amount: values.amount,
+					date: values.date,
+					isExpense: values.isExpense,
+					costBucketId: values.costBucketId,
+					note: values.note,
+					createdAt: formState.createdAt?.value,
+					updatedAt: formState.updatedAt?.value,
+					user: formState.user?.value,
+				});
+				form.reset();
+				toast({
+					title: 'Transaction updated successfully',
+				});
+			}
 			setIsLoading(false);
 			handleSaveSuccess();
 		} catch (e: unknown) {
@@ -205,6 +266,7 @@ const NewTransactionDialog = ({
 											onSelect={field.onChange}
 											disabled={(date) => date < new Date('1900-01-01')}
 											initialFocus
+											className='pointer-events-auto'
 										/>
 									</PopoverContent>
 								</Popover>
@@ -252,7 +314,9 @@ const NewTransactionDialog = ({
 			<DialogFooter>
 				<Button type='submit' form='new-transaction-form' disabled={isLoading}>
 					{isLoading && <Loader2 className='animate-spin' />}
-					Add Transacaction
+					{formState?.operation === 'new'
+						? 'Add Transaction'
+						: 'Update Transaction'}
 				</Button>
 			</DialogFooter>
 		</DialogContent>

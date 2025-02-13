@@ -1,7 +1,11 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { InsertTransactionDto } from '../../models/transaction';
+import { InsertTransactionDto, TransactionDto } from '../../models/transaction';
 import { db } from '@/db/drizzle';
-import { createTransactionService } from '../../services/transaction/CRUD';
+import {
+	createTransactionService,
+	getTransactionService,
+	updateTransactionService,
+} from '../../services/transaction/CRUD';
 import { updateGoalUseCase_ } from '@/features/goals/useCases/goal/CRUD';
 import { getGoalFromIdUseCase } from '@/features/goals/useCases/goal/getGoalFromIdUsecase';
 
@@ -31,6 +35,49 @@ export const createTransactionUseCase_ = async (
 	return newTransaction;
 };
 
+export const updateTransactionUseCase_ = async (
+	transaction: TransactionDto,
+	userId: string,
+	connection: PostgresJsDatabase<Record<string, never>> = db
+) => {
+	// Get the old transaction
+	const oldTransaction = await getTransactionService(
+		connection,
+		`eq(id,${transaction.id})`
+	);
+
+	if (oldTransaction === undefined || oldTransaction.length === 0) {
+		throw new Error('Transaction not found');
+	}
+
+	if (oldTransaction[0].user !== userId) {
+		throw new Error('Transaction is not owned by the user');
+	}
+	// Check the updated dates to see if the transaction is updated by someonelse
+	if (
+		oldTransaction[0].updatedAt.getTime() !== transaction.updatedAt.getTime()
+	) {
+		throw new Error('Transaction is updated by someone else');
+	}
+	// If yes then throw an error
+	// If no then update the transaction
+	transaction.updatedAt = new Date();
+	const updatedTransaction = await updateTransactionService(
+		transaction,
+		connection
+	);
+	// If the bucket is goal then update the goal allocation as well
+	if (transaction.note.startsWith(`ALLOCATED_TO_GOAL-`)) {
+		// Then this is allocated to a goal
+		const goalId = transaction.note.split('-')[1];
+		const goal = await getGoalFromIdUseCase(Number(goalId), connection);
+		goal.allocatedAmount +=
+			updatedTransaction[0].amount - oldTransaction[0].amount;
+		await updateGoalUseCase_(goal, connection);
+	}
+	return updatedTransaction;
+};
+
 export const createTransactionUseCase = async (
 	transaction: InsertTransactionDto,
 	userId: string,
@@ -38,5 +85,15 @@ export const createTransactionUseCase = async (
 ) => {
 	connection.transaction(async (tx) => {
 		return createTransactionUseCase_(transaction, userId, tx);
+	});
+};
+
+export const updateTransactionUseCase = async (
+	transaction: TransactionDto,
+	userId: string,
+	connection: PostgresJsDatabase<Record<string, never>> = db
+) => {
+	connection.transaction(async (tx) => {
+		return updateTransactionUseCase_(transaction, userId, tx);
 	});
 };

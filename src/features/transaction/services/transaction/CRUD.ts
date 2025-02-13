@@ -42,7 +42,14 @@ export const updateTransactionService = async (
 	//In the new transaction use case when the bucket is Goal then the transaction should update the allocation for the goal as well
 	const updatedTransaction = await connection
 		.update(TransactionTable)
-		.set(transaction)
+		.set({
+			amount: transaction.amount,
+			date: transaction.date,
+			note: transaction.note,
+			costBucketId: transaction.costBucketId,
+			updatedAt: transaction.updatedAt,
+			isExpense: transaction.isExpense,
+		})
 		.where(eq(TransactionTable.id, transaction.id))
 		.returning();
 	return updatedTransaction;
