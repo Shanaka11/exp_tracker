@@ -5,6 +5,7 @@ import { CostBucketDto } from '../../models/costBucket';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import BooleanFilter from '@/features/ui/common/TableFilters/BooleanFilter';
+import NumberFilter from '@/features/ui/common/TableFilters/NumberFilter';
 
 const generateArrayFilterString = (costBuckets: CostBucketDto[]) => {
 	if (costBuckets.length === 0) return '';
@@ -18,6 +19,40 @@ const generateArrayFilterString = (costBuckets: CostBucketDto[]) => {
 	}, '');
 
 	return `or(${flattenedArray})`;
+};
+
+const generateNumberFilterString = (amount: string) => {
+	if (amount === '') return '';
+	if (amount[0] <= '9' && amount[0] >= '0') {
+		amount = `=${amount}`;
+	}
+	const operations = amount.split(';');
+	const filterArray = operations.map((operation) => {
+		if (operation[0] === '=') {
+			return `eq(amount,${operation.substring(1)})`;
+		}
+		if (operation[0] === '>') {
+			if (operation[1] === '=') {
+				return `gte(amount,${operation.substring(2)})`;
+			}
+			if (operation[1] === '<') {
+				return `neq(amount,${operation.substring(2)})`;
+			}
+			return `gt(amount,${operation.substring(1)})`;
+		}
+		if (operation[0] === '<') {
+			if (operation[1] === '=') {
+				return `lte(amount,${operation.substring(2)})`;
+			}
+			return `lt(amount,${operation.substring(1)})`;
+		}
+		return '';
+	});
+
+	if (operations.length === 1) {
+		return filterArray[0];
+	}
+	return `and(${filterArray.join(',')})`;
 };
 
 const TransactionTableFilter = () => {
@@ -43,6 +78,13 @@ const TransactionTableFilter = () => {
 		}
 		// Date Filter
 		// Amount Filter
+		if (amount !== '') {
+			filterString = '';
+			filterString = generateNumberFilterString(amount);
+			if (filterString !== '') {
+				filterStringArray.push(encodeURIComponent(filterString));
+			}
+		}
 		if (filterStringArray.length === 0) return;
 		if (filterStringArray.length === 1) {
 			router.push(`/transactions?filter=${filterStringArray[0]}`);
@@ -57,6 +99,7 @@ const TransactionTableFilter = () => {
 	const [isExpense, setIsExpense] = useState<'true' | 'false' | undefined>(
 		undefined
 	);
+	const [amount, setAmount] = useState<string>('');
 
 	const handleCostBucketSelect = (costBucket: CostBucketDto | null) => {
 		if (costBucket !== null) {
@@ -87,6 +130,7 @@ const TransactionTableFilter = () => {
 				value={isExpense}
 				onValueChange={setIsExpense}
 			/>
+			<NumberFilter value={amount} onValueChange={setAmount} />
 			<Button onClick={applyFilter}>Apply</Button>
 			{selectedCostBucket.map((bucket) => (
 				<span key={bucket.id}>{bucket.name}</span>
