@@ -23,6 +23,7 @@ type CostBucketLovProps = {
 	onCostBucketSelect: (costBucket: CostBucketDto | null) => void;
 	selectedCostBucketId: number | null;
 	disabled?: boolean;
+	label?: string;
 };
 
 const CostBucketLov = ({
@@ -30,6 +31,7 @@ const CostBucketLov = ({
 	onCostBucketSelect,
 	selectedCostBucketId,
 	disabled,
+	label,
 }: CostBucketLovProps & HTMLAttributes<HTMLButtonElement>) => {
 	const [open, setOpen] = React.useState(false);
 
@@ -61,7 +63,7 @@ const CostBucketLov = ({
 						? costBuckets?.find(
 								(costBucket) => costBucket.id === selectedCostBucketId
 						  )?.name
-						: 'Select...'}
+						: label ?? 'Select...'}
 					<ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
 				</Button>
 			</PopoverTrigger>
@@ -69,6 +71,11 @@ const CostBucketLov = ({
 				<Command>
 					<CommandList>
 						<CommandEmpty>No Cost Bucket found.</CommandEmpty>
+						{label && (
+							<span className='px-2 py-1.5 text-sm font-semibold'>
+								Costs Buckets
+							</span>
+						)}
 						<CommandGroup>
 							{costBuckets?.map((costBucket) => (
 								<CommandItem

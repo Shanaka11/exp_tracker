@@ -4,7 +4,14 @@ import { getTransactionWithGoalNames } from '../../services/transaction/getTrans
 
 export const getAllTransactionsUseCase = async (
 	userId: string,
+	filterString?: string,
 	connection: PostgresJsDatabase<Record<string, never>> = db
 ) => {
+	if (filterString !== undefined) {
+		return await getTransactionWithGoalNames(
+			connection,
+			`and(eq(user,${userId}),${filterString})`
+		);
+	}
 	return await getTransactionWithGoalNames(connection, `eq(user,${userId})`);
 };

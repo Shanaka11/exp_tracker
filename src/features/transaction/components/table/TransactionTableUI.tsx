@@ -2,17 +2,21 @@ import { DataTable } from '@/features/ui/common/DataTable';
 import React from 'react';
 import { transactionTableColumns } from './Columns';
 import { TransactionDto } from '../../models/transaction';
+import TransactionTableFilter from './TransactionTableFilter';
 
 type TransactionTableProps = {
 	data?: TransactionDto[];
 };
 
 const TransactionTableUI = ({ data }: TransactionTableProps) => {
-	if (data === undefined || data.length === 0) {
-		return <p>No Records Found</p>;
-	}
-
-	return <DataTable columns={transactionTableColumns} data={data} />;
+	// Add the ribbon containing options for crud operations
+	// Add the filter and search options
+	return (
+		<>
+			<TransactionTableFilter />
+			<DataTable columns={transactionTableColumns} data={data ?? []} />
+		</>
+	);
 };
 
 export default TransactionTableUI;

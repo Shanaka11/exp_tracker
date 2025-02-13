@@ -34,7 +34,7 @@ export const transactionTableColumns: ColumnDef<TransactionDto>[] = [
 	},
 	{
 		accessorKey: 'id',
-		header: 'id',
+		header: 'ID',
 	},
 	{
 		accessorKey: 'date',
