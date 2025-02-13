@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import BooleanFilter from '@/features/ui/common/TableFilters/BooleanFilter';
 import NumberFilter from '@/features/ui/common/TableFilters/NumberFilter';
 import { generateNumberFilterString } from '@/lib/tableFilterUtils';
+import DateFilter from '@/features/ui/common/TableFilters/DateFilter';
+import { DateRange } from 'react-day-picker';
 
 const generateArrayFilterString = (costBuckets: CostBucketDto[]) => {
 	if (costBuckets.length === 0) return '';
@@ -44,6 +46,21 @@ const TransactionTableFilter = () => {
 			filterStringArray.push('eq(isExpense,false)');
 		}
 		// Date Filter
+		if (date !== undefined) {
+			if (date.from !== undefined && date.to !== undefined) {
+				filterString = '';
+				filterString = `between(date,${date.from.toISOString()},${date.to.toISOString()})`;
+				if (filterString !== '') {
+					filterStringArray.push(encodeURIComponent(filterString));
+				}
+			} else if (date.from !== undefined) {
+				filterString = '';
+				filterString = `eq(date,${date.from.toISOString()})`;
+				if (filterString !== '') {
+					filterStringArray.push(encodeURIComponent(filterString));
+				}
+			}
+		}
 		// Amount Filter
 		if (amount !== '') {
 			filterString = '';
@@ -67,7 +84,7 @@ const TransactionTableFilter = () => {
 		undefined
 	);
 	const [amount, setAmount] = useState<string>('');
-
+	const [date, setDate] = useState<DateRange | undefined>();
 	const handleCostBucketSelect = (costBucket: CostBucketDto | null) => {
 		if (costBucket !== null) {
 			if (
@@ -82,22 +99,26 @@ const TransactionTableFilter = () => {
 			}
 		}
 	};
+
 	return (
-		<div className='flex gap-2 mb-4'>
-			{/* <TextFilter label='Cost Bucket' onValueChange={() => {}} /> */}
-			<CostBucketLov
-				onCostBucketSelect={handleCostBucketSelect}
-				selectedCostBucketId={
-					selectedCostBucket.length > 0 ? selectedCostBucket[0].id : null
-				}
-				label='Cost Bucket'
-			/>
-			<BooleanFilter
-				label='Expense'
-				value={isExpense}
-				onValueChange={setIsExpense}
-			/>
-			<NumberFilter value={amount} onValueChange={setAmount} />
+		<div className='flex gap-2 mb-4 justify-between w-full items-center'>
+			<div className='overflow-x-auto flex gap-2 items-center'>
+				{/* <TextFilter label='Cost Bucket' onValueChange={() => {}} /> */}
+				<CostBucketLov
+					onCostBucketSelect={handleCostBucketSelect}
+					selectedCostBucketId={
+						selectedCostBucket.length > 0 ? selectedCostBucket[0].id : null
+					}
+					label='Cost Bucket'
+				/>
+				<BooleanFilter
+					label='Expense'
+					value={isExpense}
+					onValueChange={setIsExpense}
+				/>
+				<NumberFilter value={amount} onValueChange={setAmount} />
+				<DateFilter handleDateSelect={setDate} />
+			</div>
 			<Button onClick={applyFilter}>Apply</Button>
 			{selectedCostBucket.map((bucket) => (
 				<span key={bucket.id}>{bucket.name}</span>

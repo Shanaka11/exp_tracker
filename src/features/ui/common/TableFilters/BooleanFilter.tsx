@@ -18,7 +18,7 @@ type BooleanFilterProps = {
 const BooleanFilter = ({ label, value, onValueChange }: BooleanFilterProps) => {
 	return (
 		<Select value={value} onValueChange={onValueChange}>
-			<SelectTrigger className='w-[180px]'>
+			<SelectTrigger className='w-[180px] bg-white'>
 				<SelectValue placeholder={label ?? 'Select'} />
 			</SelectTrigger>
 			<SelectContent>

@@ -26,7 +26,7 @@ const NumberFilter = ({ label, value, onValueChange }: NumberFilterProps) => {
 		setError(true);
 	};
 	return (
-		<div className='flex flex-col w-[180px]'>
+		<div className='flex flex-col w-[180px] bg-white'>
 			<Input
 				placeholder={label ?? '0'}
 				className={cn('', { 'border-red-500 outline-red-700': error })}

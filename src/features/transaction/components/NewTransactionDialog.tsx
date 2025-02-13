@@ -119,6 +119,8 @@ const NewTransactionDialog = ({
 			toast({
 				title: 'Transaction being added',
 			});
+			// Trunc the time
+			values.date.setUTCHours(0, 0, 0, 0);
 			await newTransactionAction(values);
 			form.reset();
 			toast({
