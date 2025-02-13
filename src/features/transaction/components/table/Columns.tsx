@@ -54,4 +54,8 @@ export const transactionTableColumns: ColumnDef<TransactionDto>[] = [
 		accessorKey: 'costBucketName',
 		header: 'Cost Bucket',
 	},
+	{
+		accessorKey: 'note',
+		header: 'Note',
+	},
 ];

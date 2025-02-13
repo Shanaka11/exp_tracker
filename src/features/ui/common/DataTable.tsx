@@ -4,6 +4,7 @@ import {
 	ColumnDef,
 	flexRender,
 	getCoreRowModel,
+	RowSelectionState,
 	useReactTable,
 } from '@tanstack/react-table';
 
@@ -15,18 +16,21 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { useState } from 'react';
 
 type DataTableProps<TData, TValue> = {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	rowSelection: RowSelectionState;
+	setRowSelection: React.Dispatch<React.SetStateAction<object>>;
 };
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	rowSelection,
+	setRowSelection,
 }: DataTableProps<TData, TValue>) {
-	const [rowSelection, setRowSelection] = useState({});
+	// const [rowSelection, setRowSelection] = useState({});
 	const table = useReactTable({
 		data,
 		columns,

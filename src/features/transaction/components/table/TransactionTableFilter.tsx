@@ -106,7 +106,7 @@ const TransactionTableFilter = () => {
 					value={isExpense}
 					onValueChange={setIsExpense}
 				/>
-				<NumberFilter value={amount} onValueChange={setAmount} />
+				<NumberFilter value={amount} onValueChange={setAmount} label='Amount' />
 				<DateFilter handleDateSelect={setDate} />
 			</div>
 			<Button onClick={applyFilter}>Apply</Button>
