@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import BooleanFilter from '@/features/ui/common/TableFilters/BooleanFilter';
 import NumberFilter from '@/features/ui/common/TableFilters/NumberFilter';
-import { generateNumberFilterString } from '@/lib/tableFilterUtils';
+import {
+	generateBooleanFilterString,
+	generateDateFilterString,
+	generateNumberFilterString,
+} from '@/lib/tableFilterUtils';
 import DateFilter from '@/features/ui/common/TableFilters/DateFilter';
 import { DateRange } from 'react-day-picker';
 
@@ -39,36 +43,22 @@ const TransactionTableFilter = () => {
 		}
 
 		// Is Expense Filter
-		if (isExpense === 'true') {
-			filterStringArray.push('eq(isExpense,true)');
-		}
-		if (isExpense === 'false') {
-			filterStringArray.push('eq(isExpense,false)');
+		filterString = generateBooleanFilterString(isExpense);
+		if (filterString !== '') {
+			filterStringArray.push(encodeURIComponent(filterString));
 		}
 		// Date Filter
-		if (date !== undefined) {
-			if (date.from !== undefined && date.to !== undefined) {
-				filterString = '';
-				filterString = `between(date,${date.from.toISOString()},${date.to.toISOString()})`;
-				if (filterString !== '') {
-					filterStringArray.push(encodeURIComponent(filterString));
-				}
-			} else if (date.from !== undefined) {
-				filterString = '';
-				filterString = `eq(date,${date.from.toISOString()})`;
-				if (filterString !== '') {
-					filterStringArray.push(encodeURIComponent(filterString));
-				}
-			}
+		filterString = generateDateFilterString(date);
+		if (filterString !== '') {
+			filterStringArray.push(encodeURIComponent(filterString));
 		}
+
 		// Amount Filter
-		if (amount !== '') {
-			filterString = '';
-			filterString = generateNumberFilterString(amount);
-			if (filterString !== '') {
-				filterStringArray.push(encodeURIComponent(filterString));
-			}
+		filterString = generateNumberFilterString(amount);
+		if (filterString !== '') {
+			filterStringArray.push(encodeURIComponent(filterString));
 		}
+
 		if (filterStringArray.length === 0) return;
 		if (filterStringArray.length === 1) {
 			router.push(`/transactions?filter=${filterStringArray[0]}`);
