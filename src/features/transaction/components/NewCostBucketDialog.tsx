@@ -18,14 +18,52 @@ import {
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreateCostBucketSchema } from '../models/costBucket';
 import { z } from 'zod';
 import { newCostBucketAction } from '../actions/newCostBucketAction';
 import { Loader2 } from 'lucide-react';
+import { updateCostBucketAction } from '../actions/updateCostBucketAction';
 
-const NewCostBucketDialog = () => {
+export type NewCostBucketDialogFormState = {
+	id?: {
+		disabled?: boolean;
+		value: number;
+	};
+	name?: {
+		disabled?: boolean;
+		value: string;
+	};
+	description?: {
+		disabled?: boolean;
+		value: string;
+	};
+	createdAt?: {
+		disabled?: boolean;
+		value: Date;
+	};
+	updatedAt?: {
+		disabled?: boolean;
+		value: Date;
+	};
+	user?: {
+		disabled?: boolean;
+		value: string;
+	};
+	open: boolean; // To handle the dialog open state in the same state
+	operation: 'edit' | 'new'; // Tells the dialog if it should be in edit mode or new mode
+};
+
+type NewCostBucketDialogProps = {
+	formState?: NewCostBucketDialogFormState;
+	handleOnSaveSuccess: () => void;
+};
+
+const NewCostBucketDialog = ({
+	formState,
+	handleOnSaveSuccess,
+}: NewCostBucketDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
 	const form = useForm<z.infer<typeof CreateCostBucketSchema>>({
@@ -39,19 +77,65 @@ const NewCostBucketDialog = () => {
 		},
 	});
 
+	useEffect(() => {
+		if (formState?.open) {
+			form.reset({
+				name: formState.name?.value ?? '',
+				description: formState.description?.value,
+				user: formState.user?.value,
+			});
+		}
+
+		if (formState === undefined) {
+			form.reset({
+				name: '',
+				description: '',
+				user: 'dummy',
+			});
+		}
+	}, [
+		form,
+		formState,
+		formState?.description?.value,
+		formState?.name?.value,
+		formState?.open,
+		formState?.user?.value,
+	]);
+
 	const handleOnSubmit = async (
 		values: z.infer<typeof CreateCostBucketSchema>
 	) => {
 		try {
+			const isUpdate = formState?.operation === 'edit';
 			setIsLoading(true);
 			toast({
-				title: 'Cost Bucket being added',
+				title: `Cost Bucket being ${isUpdate ? 'updated' : 'added'}`,
 			});
-			await newCostBucketAction(values);
+			if (isUpdate) {
+				if (
+					formState.createdAt === undefined ||
+					formState.updatedAt === undefined ||
+					formState.user === undefined
+				) {
+					return;
+				}
+				const result = await updateCostBucketAction({
+					...values,
+					id: formState?.id?.value ?? 0,
+					createdAt: formState?.createdAt?.value,
+					updatedAt: formState?.updatedAt?.value,
+					user: formState?.user?.value,
+				});
+				if (result?.error) {
+					throw new Error(result.error);
+				}
+			} else {
+				await newCostBucketAction(values);
+			}
 			form.reset();
-			// handleSaveSuccess();
+			handleOnSaveSuccess();
 			toast({
-				title: 'Cost Bucket Added successfully',
+				title: `Cost Bucket ${isUpdate ? 'updated' : 'added'} successfully`,
 			});
 			setIsLoading(false);
 		} catch (e: unknown) {
@@ -113,7 +197,7 @@ const NewCostBucketDialog = () => {
 			<DialogFooter>
 				<Button type='submit' form='new-cost_bucket-form' disabled={isLoading}>
 					{isLoading && <Loader2 className='animate-spin' />}
-					Add Cost Bucket
+					{formState?.operation === 'edit' ? 'Update' : 'Add'} Cost Bucket
 				</Button>
 			</DialogFooter>
 		</DialogContent>

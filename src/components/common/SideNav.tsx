@@ -48,7 +48,7 @@ const SideNav = () => {
 					variant: 'default',
 					className: 'w-full rounded-none hover:translate-x-1 hover:rounded-sm',
 				})}
-				href={'/costbucket'}
+				href={'/costbuckets'}
 			>
 				<ChartColumn />
 			</Link>

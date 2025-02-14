@@ -1,0 +1,136 @@
+'use client';
+import { CostBucketDto } from '@/features/transaction/models/costBucket';
+import { DataTable } from '@/features/ui/common/DataTable';
+import React, { useState } from 'react';
+import { costBucketTableColumns } from './Columns';
+import { useTableActionsHook } from '@/hooks/useTableActionsHook';
+import TableActions from '@/features/ui/common/TableActions';
+import { Dialog } from '@radix-ui/react-dialog';
+import NewCostBucketDialog, {
+	NewCostBucketDialogFormState,
+} from '../../NewCostBucketDialog';
+import { useRouter } from 'next/navigation';
+import { deleteCostBucketAction } from '@/features/transaction/actions/deleteCostBucketAction';
+import { useToast } from '@/hooks/use-toast';
+
+type CostBucketTableUIProps = {
+	data: CostBucketDto[];
+};
+
+const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
+	const [formState, setFormState] = useState<NewCostBucketDialogFormState>({
+		open: false,
+		operation: 'edit',
+	});
+	const router = useRouter();
+	const { toast } = useToast();
+	const {
+		showFilter,
+		setShowFilter,
+		rowSelection,
+		setRowSelection,
+		newTransactionDialogState,
+		selectedItemLength,
+		closeDialog,
+		openEditDialog,
+		openNewDialog,
+		clearSelection,
+	} = useTableActionsHook();
+
+	const handleEditOnClick = () => {
+		const selectedRowIndex = Number(Object.keys(rowSelection)[0]);
+		setFormState({
+			...formState,
+			id: {
+				value: data[selectedRowIndex].id,
+			},
+			name: {
+				value: data[selectedRowIndex].name,
+			},
+			description: {
+				value: data[selectedRowIndex].description,
+			},
+			createdAt: {
+				value: data[selectedRowIndex].createdAt,
+			},
+			updatedAt: {
+				value: data[selectedRowIndex].updatedAt,
+			},
+			user: {
+				value: data[selectedRowIndex].user,
+			},
+			open: true,
+			operation: 'edit',
+		});
+		openEditDialog();
+	};
+	const handleDeleteOnClick = () => {
+		try {
+			if (data === undefined) return;
+			toast({
+				title: 'Deleting Transactions',
+			});
+			// Pick the selected transactions and delete them
+			const selectedItems = Object.keys(rowSelection).map(
+				(index) => data[Number(index)]
+			);
+			deleteCostBucketAction(selectedItems);
+			toast({
+				title: 'Transactions Deleted Successfully',
+			});
+			handleSaveSuccess();
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				toast({
+					variant: 'destructive',
+					description: error.message,
+				});
+				return;
+			}
+			console.error(error);
+			return;
+		}
+	};
+	const handleSaveSuccess = () => {
+		closeDialog();
+		setTimeout(() => {
+			router.refresh();
+			clearSelection();
+		}, 1000);
+	};
+	return (
+		<>
+			<Dialog
+				open={
+					newTransactionDialogState === 'NEW' ||
+					(newTransactionDialogState === 'UPDATE' && formState.open)
+				}
+				onOpenChange={() => closeDialog()}
+			>
+				<NewCostBucketDialog
+					handleOnSaveSuccess={handleSaveSuccess}
+					formState={
+						newTransactionDialogState === 'UPDATE' ? formState : undefined
+					}
+				/>
+			</Dialog>
+			<TableActions
+				selectedItemLength={selectedItemLength}
+				setShowFilter={setShowFilter}
+				showFilter={showFilter}
+				handleNewOnClick={openNewDialog}
+				handleEditOnClick={handleEditOnClick}
+				handleDeleteOnClick={handleDeleteOnClick}
+			/>
+			{/* {showFilter && <TransactionTableFilter />} */}
+			<DataTable
+				columns={costBucketTableColumns}
+				data={data ?? []}
+				rowSelection={rowSelection}
+				setRowSelection={setRowSelection}
+			/>
+		</>
+	);
+};
+
+export default CostBucketTableUI;

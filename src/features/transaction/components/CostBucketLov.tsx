@@ -37,7 +37,7 @@ const CostBucketLov = ({
 
 	const { data: costBuckets } = useQuery({
 		queryKey: ['costBucket'],
-		queryFn: getUserCostBucketAction,
+		queryFn: async () => await getUserCostBucketAction(),
 	});
 
 	const handleSelect = (costBucket: CostBucketDto) => {

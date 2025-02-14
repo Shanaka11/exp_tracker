@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import NewCostBucketDialog from './NewCostBucketDialog';
 import { Dialog } from '@/components/ui/dialog';
+import { useRouter } from 'next/navigation';
 
 const chartConfig = {
 	total: {
@@ -29,6 +30,12 @@ const CostDistributionChart = ({
 }: CostDistributionChartProps) => {
 	const [open, setOpen] = useState(false);
 	// If no data is available, show add cost buckets button
+	const router = useRouter();
+	const handleOnSaveSuccess = () => {
+		setTimeout(() => {
+			router.refresh();
+		}, 1000);
+	};
 	if (distribution.length === 0) {
 		return (
 			<div className='h-full w-full grid items-center'>
@@ -36,7 +43,7 @@ const CostDistributionChart = ({
 					<Plus /> Define Cost Buckets
 				</Button>
 				<Dialog open={open} onOpenChange={setOpen}>
-					<NewCostBucketDialog />
+					<NewCostBucketDialog handleOnSaveSuccess={handleOnSaveSuccess} />
 				</Dialog>
 			</div>
 		);

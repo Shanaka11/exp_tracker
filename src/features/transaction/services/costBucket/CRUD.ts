@@ -1,11 +1,11 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import { generateDrizzleFilterPg } from 'drizzle-query-helper';
+import { generateDrizzleFilter } from 'drizzle-query-helper';
 import {
 	CostBucketDto,
 	CostBucketTable,
 	InsertCostBucketDto,
 } from '../../models/costBucket';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 
 export const createCostBucketService = async (
 	costBucket: InsertCostBucketDto,
@@ -25,14 +25,14 @@ export const getCostBucketService = async (
 	const query = connection.select().from(CostBucketTable).$dynamic();
 	if (filterString) {
 		//@ts-expect-error types not defined
-		const filter = generateDrizzleFilterPg(CostBucketTable, filterString);
+		const filter = generateDrizzleFilter(CostBucketTable, filterString);
 		if (filter !== null && filter !== undefined) {
 			//@ts-expect-error types not defined
 			query.where(filter);
 		}
 	}
 
-	return await query;
+	return await query.orderBy(desc(CostBucketTable.id));
 };
 
 export const updateCostBucketService = async (
@@ -41,7 +41,11 @@ export const updateCostBucketService = async (
 ) => {
 	const updatedCostBucket = await connection
 		.update(CostBucketTable)
-		.set(costBucket)
+		.set({
+			name: costBucket.name,
+			description: costBucket.description,
+			updatedAt: costBucket.updatedAt,
+		})
 		.where(eq(CostBucketTable.id, costBucket.id))
 		.returning();
 	return updatedCostBucket;

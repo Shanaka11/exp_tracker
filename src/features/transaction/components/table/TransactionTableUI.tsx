@@ -69,9 +69,10 @@ const TransactionTableUI = ({ data }: TransactionTableProps) => {
 					variant: 'destructive',
 					description: error.message,
 				});
-				console.error(error.message);
+				return;
 			}
 			console.error(error);
+			return;
 		}
 	};
 
