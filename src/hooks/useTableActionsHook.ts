@@ -24,6 +24,10 @@ export const useTableActionsHook = () => {
 		setNewTransactionDialogState('CLOSED');
 	};
 
+	const clearSelection = () => {
+		setRowSelection({});
+	};
+
 	return {
 		showFilter,
 		setShowFilter,
@@ -34,5 +38,6 @@ export const useTableActionsHook = () => {
 		openNewDialog,
 		closeDialog,
 		selectedItemLength,
+		clearSelection,
 	};
 };

@@ -11,6 +11,8 @@ import NewTransactionDialog, {
 } from '../NewTransactionDialog';
 import { useTableActionsHook } from '@/hooks/useTableActionsHook';
 import { useRouter } from 'next/navigation';
+import { deleteTransactionsAction } from '../../actions/deleteTransactionsAction';
+import { useToast } from '@/hooks/use-toast';
 
 type TransactionTableProps = {
 	data?: TransactionDto[];
@@ -32,13 +34,45 @@ const TransactionTableUI = ({ data }: TransactionTableProps) => {
 		closeDialog,
 		openEditDialog,
 		openNewDialog,
+		clearSelection,
 	} = useTableActionsHook();
 
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const handleSaveSuccess = () => {
 		closeDialog();
-		setTimeout(() => router.refresh(), 1000);
+		setTimeout(() => {
+			router.refresh();
+			clearSelection();
+		}, 1000);
+	};
+
+	const handleRowDelete = async () => {
+		try {
+			if (data === undefined) return;
+			toast({
+				title: 'Deleting Transactions',
+			});
+			// Pick the selected transactions and delete them
+			const selectedItems = Object.keys(rowSelection).map(
+				(index) => data[Number(index)]
+			);
+			deleteTransactionsAction(selectedItems);
+			toast({
+				title: 'Transactions Deleted Successfully',
+			});
+			handleSaveSuccess();
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				toast({
+					variant: 'destructive',
+					description: error.message,
+				});
+				console.error(error.message);
+			}
+			console.error(error);
+		}
 	};
 
 	const handleEditOnClick = () => {
@@ -112,6 +146,7 @@ const TransactionTableUI = ({ data }: TransactionTableProps) => {
 				showFilter={showFilter}
 				handleNewOnClick={openNewDialog}
 				handleEditOnClick={handleEditOnClick}
+				handleDeleteOnClick={handleRowDelete}
 			/>
 			{showFilter && <TransactionTableFilter />}
 			<DataTable

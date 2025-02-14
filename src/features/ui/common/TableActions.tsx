@@ -9,6 +9,7 @@ type TableActionsProps = {
 	showFilter: boolean;
 	handleNewOnClick: () => void;
 	handleEditOnClick: () => void;
+	handleDeleteOnClick: () => void;
 };
 
 const TableActions = ({
@@ -17,6 +18,7 @@ const TableActions = ({
 	showFilter,
 	handleNewOnClick,
 	handleEditOnClick,
+	handleDeleteOnClick,
 }: TableActionsProps) => {
 	return (
 		<div className='flex gap-2 mb-2'>
@@ -30,7 +32,11 @@ const TableActions = ({
 			>
 				<Pencil />
 			</Button>
-			<Button size='icon' disabled={selectedItemLength === 0}>
+			<Button
+				size='icon'
+				disabled={selectedItemLength === 0}
+				onClick={handleDeleteOnClick}
+			>
 				<Trash2 />
 			</Button>
 			<Button
