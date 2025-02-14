@@ -29,6 +29,7 @@ const generateArrayFilterString = (costBuckets: CostBucketDto[]) => {
 };
 
 const TransactionTableFilter = () => {
+	// TODO: Show applied filters as chips and allow them to be removed
 	const router = useRouter();
 
 	const applyFilter = () => {

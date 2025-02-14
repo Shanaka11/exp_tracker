@@ -12,6 +12,7 @@ import NewCostBucketDialog, {
 import { useRouter } from 'next/navigation';
 import { deleteCostBucketAction } from '@/features/transaction/actions/deleteCostBucketAction';
 import { useToast } from '@/hooks/use-toast';
+import CostBucketTableFilter from './CostBucketTableFilter';
 
 type CostBucketTableUIProps = {
 	data: CostBucketDto[];
@@ -122,7 +123,7 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 				handleEditOnClick={handleEditOnClick}
 				handleDeleteOnClick={handleDeleteOnClick}
 			/>
-			{/* {showFilter && <TransactionTableFilter />} */}
+			{showFilter && <CostBucketTableFilter />}
 			<DataTable
 				columns={costBucketTableColumns}
 				data={data ?? []}
