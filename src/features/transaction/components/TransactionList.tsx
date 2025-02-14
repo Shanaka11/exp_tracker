@@ -7,7 +7,7 @@ const TransactionList = async () => {
 
 	return (
 		<ol className='overflow-auto h-full flex flex-col gap-1'>
-			{transactions.map((transaction) => (
+			{transactions?.map((transaction) => (
 				<TransactionListItem key={transaction.id} transaction={transaction} />
 			))}
 		</ol>

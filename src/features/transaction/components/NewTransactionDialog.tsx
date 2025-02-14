@@ -148,7 +148,7 @@ const NewTransactionDialog = ({
 	) => {
 		try {
 			setIsLoading(true);
-			if (formState?.operation === 'new') {
+			if (formState?.operation === 'new' || formState === undefined) {
 				toast({
 					title: 'Transaction being added',
 				});
@@ -314,7 +314,7 @@ const NewTransactionDialog = ({
 			<DialogFooter>
 				<Button type='submit' form='new-transaction-form' disabled={isLoading}>
 					{isLoading && <Loader2 className='animate-spin' />}
-					{formState?.operation === 'new'
+					{formState?.operation === 'new' || formState === undefined
 						? 'Add Transaction'
 						: 'Update Transaction'}
 				</Button>
