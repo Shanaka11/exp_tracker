@@ -15,7 +15,6 @@ const page = async ({
 			<CostBucketTableUI data={data} />
 		</div>
 	);
-	return <div>page</div>;
 };
 
 export default page;

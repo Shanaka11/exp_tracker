@@ -58,7 +58,7 @@ const TransactionTableUI = ({ data }: TransactionTableProps) => {
 			const selectedItems = Object.keys(rowSelection).map(
 				(index) => data[Number(index)]
 			);
-			deleteTransactionsAction(selectedItems);
+			await deleteTransactionsAction(selectedItems);
 			toast({
 				title: 'Transactions Deleted Successfully',
 			});

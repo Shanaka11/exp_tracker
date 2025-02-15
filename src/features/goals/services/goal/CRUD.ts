@@ -1,7 +1,7 @@
 import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { GoalDto, GoalTable, InsertGoalDto } from '../../models/goal';
 import { generateDrizzleFilter } from 'drizzle-query-helper';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 
 export const getGoalService = async (
 	connection: PostgresJsDatabase<Record<string, never>>,
@@ -16,7 +16,7 @@ export const getGoalService = async (
 			query.where(filter);
 		}
 	}
-	const result = await query;
+	const result = await query.orderBy(desc(GoalTable.id));
 
 	return result;
 };
@@ -44,4 +44,11 @@ export const updateGoalService = async (
 		})
 		.where(eq(GoalTable.id, goal.id))
 		.returning();
+};
+
+export const deleteGoalService = async (
+	goal: GoalDto,
+	connection: PostgresJsDatabase<Record<string, never>>
+) => {
+	return await connection.delete(GoalTable).where(eq(GoalTable.id, goal.id));
 };

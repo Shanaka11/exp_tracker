@@ -1,30 +1,31 @@
 'use client';
-import { CostBucketDto } from '@/features/transaction/models/costBucket';
 import { DataTable } from '@/features/ui/common/DataTable';
-import React, { useState } from 'react';
-import { costBucketTableColumns } from './Columns';
-import { useTableActionsHook } from '@/hooks/useTableActionsHook';
 import TableActions from '@/features/ui/common/TableActions';
-import { Dialog } from '@radix-ui/react-dialog';
-import NewCostBucketDialog, {
-	NewCostBucketDialogFormState,
-} from '../../NewCostBucketDialog';
+import React, { useState } from 'react';
+import { goalTableColumns } from './Columns';
+import { GoalDto } from '../../models/goal';
+import { useTableActionsHook } from '@/hooks/useTableActionsHook';
+import CreateNewGoalDialog, {
+	NewGoalDialogFormState,
+} from '../CreateNewGoalDialog';
+import { Dialog } from '@/components/ui/dialog';
 import { useRouter } from 'next/navigation';
-import { deleteCostBucketAction } from '@/features/transaction/actions/deleteCostBucketAction';
 import { useToast } from '@/hooks/use-toast';
-import CostBucketTableFilter from './CostBucketTableFilter';
+import { deleteGoalAction } from '../../actions/deleteGoalAction';
 
-type CostBucketTableUIProps = {
-	data: CostBucketDto[];
+type GoalTableUIProps = {
+	data: GoalDto[];
 };
 
-const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
-	const [formState, setFormState] = useState<NewCostBucketDialogFormState>({
+const GoalTableUI = ({ data }: GoalTableUIProps) => {
+	const [formState, setFormState] = useState<NewGoalDialogFormState>({
 		open: false,
 		operation: 'edit',
 	});
+
 	const router = useRouter();
 	const { toast } = useToast();
+
 	const {
 		showFilter,
 		setShowFilter,
@@ -45,11 +46,21 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 			id: {
 				value: data[selectedRowIndex].id,
 			},
-			name: {
-				value: data[selectedRowIndex].name,
+			title: {
+				value: data[selectedRowIndex].title,
 			},
-			description: {
-				value: data[selectedRowIndex].description,
+			allocatedAmount: {
+				value: data[selectedRowIndex].allocatedAmount,
+				disabled: true,
+			},
+			targetAmount: {
+				value: data[selectedRowIndex].targetAmount,
+			},
+			targetDate: {
+				value: data[selectedRowIndex].targetDate,
+			},
+			icon: {
+				value: data[selectedRowIndex].icon,
 			},
 			createdAt: {
 				value: data[selectedRowIndex].createdAt,
@@ -65,6 +76,7 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 		});
 		openEditDialog();
 	};
+
 	const handleDeleteOnClick = async () => {
 		try {
 			if (data === undefined) return;
@@ -75,11 +87,11 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 			const selectedItems = Object.keys(rowSelection).map(
 				(index) => data[Number(index)]
 			);
-			await deleteCostBucketAction(selectedItems);
+			await deleteGoalAction(selectedItems);
 			toast({
 				title: 'Transactions Deleted Successfully',
 			});
-			handleSaveSuccess();
+			handleOnSaveSuccess();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				toast({
@@ -92,7 +104,8 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 			return;
 		}
 	};
-	const handleSaveSuccess = () => {
+
+	const handleOnSaveSuccess = () => {
 		closeDialog();
 		setTimeout(() => {
 			router.refresh();
@@ -108,8 +121,8 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 				}
 				onOpenChange={() => closeDialog()}
 			>
-				<NewCostBucketDialog
-					handleOnSaveSuccess={handleSaveSuccess}
+				<CreateNewGoalDialog
+					handleSaveSuccess={handleOnSaveSuccess}
 					formState={
 						newTransactionDialogState === 'UPDATE' ? formState : undefined
 					}
@@ -123,9 +136,9 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 				handleEditOnClick={handleEditOnClick}
 				handleDeleteOnClick={handleDeleteOnClick}
 			/>
-			{showFilter && <CostBucketTableFilter />}
+			{/* {showFilter && <CostBucketTableFilter />} */}
 			<DataTable
-				columns={costBucketTableColumns}
+				columns={goalTableColumns}
 				data={data ?? []}
 				rowSelection={rowSelection}
 				setRowSelection={setRowSelection}
@@ -134,4 +147,4 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 	);
 };
 
-export default CostBucketTableUI;
+export default GoalTableUI;

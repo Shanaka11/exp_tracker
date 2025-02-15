@@ -1,6 +1,6 @@
 import { useToast } from '@/hooks/use-toast';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { createGoalAction } from '../actions/createGoalAction';
@@ -33,13 +33,57 @@ import { Calendar } from '@/components/ui/calendar';
 import { format } from 'date-fns';
 import IconSelector from '@/features/Icons/components/IconSelector';
 import { IconType } from '@/features/Icons/components/DynamicIcon';
+import { updateGoalAction } from '../actions/updateGoalAction';
+
+export type NewGoalDialogFormState = {
+	id?: {
+		disabled?: boolean;
+		value: number;
+	};
+	title?: {
+		disabled?: boolean;
+		value: string;
+	};
+	targetAmount?: {
+		disabled?: boolean;
+		value: number;
+	};
+	allocatedAmount?: {
+		disabled?: boolean;
+		value: number;
+	};
+	targetDate?: {
+		disabled?: boolean;
+		value: Date;
+	};
+	createdAt?: {
+		disabled?: boolean;
+		value: Date;
+	};
+	updatedAt?: {
+		disabled?: boolean;
+		value: Date;
+	};
+	icon?: {
+		disabled?: boolean;
+		value: string;
+	};
+	user?: {
+		disabled?: boolean;
+		value: string;
+	};
+	open: boolean; // To handle the dialog open state in the same state
+	operation: 'edit' | 'new'; // Tells the dialog if it should be in edit mode or new mode
+};
 
 type CreateNewGoalDialogProps = {
 	handleSaveSuccess: () => void;
+	formState?: NewGoalDialogFormState;
 };
 
 const CreateNewGoalDialog = ({
 	handleSaveSuccess,
+	formState,
 }: CreateNewGoalDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
@@ -59,18 +103,64 @@ const CreateNewGoalDialog = ({
 
 	const [selectedIcon, setSelectedIcon] = useState<IconType>('house');
 
+	useEffect(() => {
+		console.log('formState', formState);
+		if (formState?.open) {
+			form.reset({
+				title: formState.title?.value ?? '',
+				allocatedAmount: formState.allocatedAmount?.value ?? 0,
+				targetAmount: formState.targetAmount?.value ?? 0,
+				targetDate: formState.targetDate?.value,
+				icon: formState.icon?.value ?? 'house',
+				user: formState.user?.value,
+			});
+			setSelectedIcon((formState.icon?.value as IconType) ?? 'house');
+		}
+
+		if (formState === undefined) {
+			form.reset({
+				title: '',
+				allocatedAmount: 0,
+				targetAmount: 0,
+				targetDate: new Date(),
+				icon: 'house',
+				user: 'dummy',
+			});
+			setSelectedIcon('house');
+		}
+	}, [form, formState, formState?.open]);
+
 	const handleOnSubmit = async (values: z.infer<typeof CreateGoalSchema>) => {
 		try {
+			const isUpdate = formState?.operation === 'edit';
 			setIsLoading(true);
 			toast({
-				title: 'Goal being added',
+				title: `Goal being ${isUpdate ? 'updated' : 'added'}`,
 			});
-			await createGoalAction(values);
+			if (isUpdate) {
+				if (
+					formState?.createdAt === undefined ||
+					formState?.updatedAt === undefined ||
+					formState?.user === undefined
+				) {
+					return;
+				}
+				await updateGoalAction({
+					...values,
+					id: formState?.id?.value ?? 0,
+					createdAt: formState.createdAt.value,
+					updatedAt: formState.updatedAt.value,
+					user: formState?.user?.value,
+				});
+			} else {
+				await createGoalAction(values);
+			}
+
 			form.reset();
 			setSelectedIcon('house');
 			handleSaveSuccess();
 			toast({
-				title: 'Goal Added successfully',
+				title: `Goal ${isUpdate ? 'updated' : 'added'} successfully`,
 			});
 			setIsLoading(false);
 		} catch (e: unknown) {
@@ -187,7 +277,12 @@ const CreateNewGoalDialog = ({
 							<FormItem className='col-span-2'>
 								<FormLabel>Current Allocation</FormLabel>
 								<FormControl>
-									<Input {...field} type='number' step='0.01' />
+									<Input
+										{...field}
+										type='number'
+										step='0.01'
+										disabled={formState?.allocatedAmount?.disabled}
+									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -198,7 +293,7 @@ const CreateNewGoalDialog = ({
 			<DialogFooter>
 				<Button type='submit' form='new-goal-form' disabled={isLoading}>
 					{isLoading && <Loader2 className='animate-spin' />}
-					Add Goal
+					{formState?.operation === 'edit' ? 'Update Goal' : 'Add Goal'}
 				</Button>
 			</DialogFooter>
 		</DialogContent>

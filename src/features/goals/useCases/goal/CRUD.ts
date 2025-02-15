@@ -3,6 +3,7 @@ import { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import { GoalDto, InsertGoalDto } from '../../models/goal';
 import {
 	createGoalService,
+	deleteGoalService,
 	getGoalService,
 	updateGoalService,
 } from '../../services/goal/CRUD';
@@ -51,16 +52,37 @@ export const createGoalUseCase_ = async (
 
 export const updateGoalUseCase_ = async (
 	goal: GoalDto,
+	userId: string,
 	connection: PostgresJsDatabase<Record<string, never>> = db
 ) => {
+	if (goal.user !== userId) {
+		throw new Error('Goal is not owned by the user');
+	}
 	// get the goal before updating
-	const oldGoal = await getGoalService(connection, `and(eq(id,${goal.id}))`);
+	const oldGoal = await getGoalService(connection, `eq(id,${goal.id})`);
 	if (oldGoal[0].updatedAt.getTime !== goal.updatedAt.getTime) {
 		throw new Error('Goal has been updated by another user');
 	}
 	// Update the goal
 	goal.updatedAt = new Date();
 	return await updateGoalService(goal, connection);
+};
+
+export const deleteGoalUseCase_ = async (
+	goals: GoalDto[],
+	userId: string,
+	connection: PostgresJsDatabase<Record<string, never>> = db
+) => {
+	for (const goal of goals) {
+		if (goal.user !== userId) {
+			throw new Error('Goal is not owned by the user');
+		}
+		const oldGoal = await getGoalService(connection, `eq(id,${goal.id})`);
+		if (oldGoal[0].updatedAt.getTime !== goal.updatedAt.getTime) {
+			throw new Error('Goal has been updated by another user');
+		}
+		await deleteGoalService(goal, connection);
+	}
 };
 
 // Public use cases
@@ -71,5 +93,25 @@ export const createGoalUseCase = async (
 ) => {
 	connection.transaction(async (tx) => {
 		await createGoalUseCase_(goal, userId, tx);
+	});
+};
+
+export const updateGoalUseCase = async (
+	goal: GoalDto,
+	userId: string,
+	connection: PostgresJsDatabase<Record<string, never>> = db
+) => {
+	connection.transaction(async (tx) => {
+		await updateGoalUseCase_(goal, userId, tx);
+	});
+};
+
+export const deleteGoalUseCase = async (
+	goals: GoalDto[],
+	userId: string,
+	connection: PostgresJsDatabase<Record<string, never>> = db
+) => {
+	connection.transaction(async (tx) => {
+		await deleteGoalUseCase_(goals, userId, tx);
 	});
 };

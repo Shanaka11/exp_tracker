@@ -30,7 +30,7 @@ export const createTransactionUseCase_ = async (
 		const goalId = transaction.note.split('-')[1];
 		const goal = await getGoalFromIdUseCase(Number(goalId), connection);
 		goal.allocatedAmount += transaction.amount;
-		await updateGoalUseCase_(goal, connection);
+		await updateGoalUseCase_(goal, userId, connection);
 	}
 
 	return newTransaction;
@@ -74,7 +74,7 @@ export const updateTransactionUseCase_ = async (
 		const goal = await getGoalFromIdUseCase(Number(goalId), connection);
 		goal.allocatedAmount +=
 			updatedTransaction[0].amount - oldTransaction[0].amount;
-		await updateGoalUseCase_(goal, connection);
+		await updateGoalUseCase_(goal, userId, connection);
 	}
 	return updatedTransaction;
 };
@@ -116,7 +116,7 @@ export const deleteTransactionUseCase_ = async (
 			const goalId = transaction.note.split('-')[1];
 			const goal = await getGoalFromIdUseCase(Number(goalId), connection);
 			goal.allocatedAmount -= deletedTransaction[0].amount;
-			await updateGoalUseCase_(goal, connection);
+			await updateGoalUseCase_(goal, userId, connection);
 		}
 	}
 };
