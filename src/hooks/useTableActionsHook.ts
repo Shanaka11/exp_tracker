@@ -3,8 +3,14 @@ import { useMemo, useState } from 'react';
 
 type NewDialogStatus = 'CLOSED' | 'NEW' | 'UPDATE';
 
-export const useTableActionsHook = () => {
-	const [showFilter, setShowFilter] = useState(false);
+type useTableActionsHookProps = {
+	showFilterOnMount: boolean;
+};
+
+export const useTableActionsHook = ({
+	showFilterOnMount,
+}: useTableActionsHookProps) => {
+	const [showFilter, setShowFilter] = useState(showFilterOnMount);
 	const [rowSelection, setRowSelection] = useState({});
 	const [newTransactionDialogState, setNewTransactionDialogState] =
 		useState<NewDialogStatus>('CLOSED');

@@ -38,7 +38,7 @@ const GoalTableUI = ({ data }: GoalTableUIProps) => {
 		openEditDialog,
 		openNewDialog,
 		clearSelection,
-	} = useTableActionsHook();
+	} = useTableActionsHook({ showFilterOnMount: false });
 
 	const handleEditOnClick = () => {
 		const selectedRowIndex = Number(Object.keys(rowSelection)[0]);

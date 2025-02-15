@@ -35,7 +35,9 @@ const TransactionTableUI = ({ data }: TransactionTableProps) => {
 		openEditDialog,
 		openNewDialog,
 		clearSelection,
-	} = useTableActionsHook();
+	} = useTableActionsHook({
+		showFilterOnMount: false,
+	});
 
 	const router = useRouter();
 	const { toast } = useToast();

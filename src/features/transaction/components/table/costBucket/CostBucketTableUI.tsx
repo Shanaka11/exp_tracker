@@ -16,9 +16,10 @@ import CostBucketTableFilter from './CostBucketTableFilter';
 
 type CostBucketTableUIProps = {
 	data: CostBucketDto[];
+	filterString?: string;
 };
 
-const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
+const CostBucketTableUI = ({ data, filterString }: CostBucketTableUIProps) => {
 	const [formState, setFormState] = useState<NewCostBucketDialogFormState>({
 		open: false,
 		operation: 'edit',
@@ -36,7 +37,7 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 		openEditDialog,
 		openNewDialog,
 		clearSelection,
-	} = useTableActionsHook();
+	} = useTableActionsHook({ showFilterOnMount: filterString !== undefined });
 
 	const handleEditOnClick = () => {
 		const selectedRowIndex = Number(Object.keys(rowSelection)[0]);
@@ -99,6 +100,7 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 			clearSelection();
 		}, 1000);
 	};
+
 	return (
 		<>
 			<Dialog
@@ -123,7 +125,7 @@ const CostBucketTableUI = ({ data }: CostBucketTableUIProps) => {
 				handleEditOnClick={handleEditOnClick}
 				handleDeleteOnClick={handleDeleteOnClick}
 			/>
-			{showFilter && <CostBucketTableFilter />}
+			{showFilter && <CostBucketTableFilter filterString={filterString} />}
 			<DataTable
 				columns={costBucketTableColumns}
 				data={data ?? []}
