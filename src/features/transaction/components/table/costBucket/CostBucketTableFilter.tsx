@@ -8,6 +8,11 @@ const CostBucketTableFilter = () => {
 
 	const router = useRouter();
 
+	const clearFilter = () => {
+		setText('');
+		router.push('/costbuckets');
+	};
+
 	const applyFilter = () => {
 		if (text === '') return;
 		router.push(`/costbuckets?filter=ilike(name,${text})`);
@@ -18,7 +23,10 @@ const CostBucketTableFilter = () => {
 			<div className='overflow-x-auto flex gap-2 items-center py-1'>
 				<TextFilter label='Cost Bucket' onValueChange={setText} />
 			</div>
-			<Button onClick={applyFilter}>Apply</Button>
+			<div className='flex gap-2 items-center'>
+				<Button onClick={clearFilter}>Clear</Button>
+				<Button onClick={applyFilter}>Apply</Button>
+			</div>
 		</div>
 	);
 };

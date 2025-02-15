@@ -32,6 +32,14 @@ const TransactionTableFilter = () => {
 	// TODO: Show applied filters as chips and allow them to be removed
 	const router = useRouter();
 
+	const clearFilter = () => {
+		setSelectedCostBucket([]);
+		setIsExpense(undefined);
+		setAmount('');
+		setDate(undefined);
+		router.push('/transactions');
+	};
+
 	const applyFilter = () => {
 		const filterStringArray = [];
 		let filterString = '';
@@ -110,7 +118,10 @@ const TransactionTableFilter = () => {
 				<NumberFilter value={amount} onValueChange={setAmount} label='Amount' />
 				<DateFilter handleDateSelect={setDate} />
 			</div>
-			<Button onClick={applyFilter}>Apply</Button>
+			<div className='flex gap-2 items-center'>
+				<Button onClick={clearFilter}>Clear</Button>
+				<Button onClick={applyFilter}>Apply</Button>
+			</div>
 			{selectedCostBucket.map((bucket) => (
 				<span key={bucket.id}>{bucket.name}</span>
 			))}

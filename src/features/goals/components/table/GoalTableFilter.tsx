@@ -17,6 +17,14 @@ const GoalTableFilter = () => {
 	const [targetDate, setTargetDate] = useState<DateRange | undefined>();
 	const router = useRouter();
 
+	const clearFilter = () => {
+		setTitle('');
+		setAllocatedAmount('');
+		setTargetAmount('');
+		setTargetDate(undefined);
+		router.push('/goals');
+	};
+
 	const applyFilter = () => {
 		const filterStringArray: string[] = [];
 		// Title
@@ -73,7 +81,10 @@ const GoalTableFilter = () => {
 				/>
 				<DateFilter handleDateSelect={setTargetDate} label='Target Date' />
 			</div>
-			<Button onClick={applyFilter}>Apply</Button>
+			<div className='flex gap-2 items-center'>
+				<Button onClick={clearFilter}>Clear</Button>
+				<Button onClick={applyFilter}>Apply</Button>
+			</div>
 		</div>
 	);
 };
