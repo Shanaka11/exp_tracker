@@ -26,10 +26,10 @@ const NumberFilter = ({ label, value, onValueChange }: NumberFilterProps) => {
 		setError(true);
 	};
 	return (
-		<div className='flex flex-col w-[180px] bg-white'>
+		<div className='flex flex-col w-[180px]'>
 			<Input
 				placeholder={label ?? '0'}
-				className={cn('', { 'border-red-500 outline-red-700': error })}
+				className={cn('bg-white', { 'border-red-500 outline-red-700': error })}
 				defaultValue={value}
 				onBlur={(e) => handleOnValueChange(e.target.value)}
 			/>

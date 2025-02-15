@@ -15,7 +15,7 @@ const CostBucketTableFilter = () => {
 
 	return (
 		<div className='flex gap-2 mb-4 justify-between w-full items-center'>
-			<div className='overflow-x-auto flex gap-2 items-center'>
+			<div className='overflow-x-auto flex gap-2 items-center py-1'>
 				<TextFilter label='Cost Bucket' onValueChange={setText} />
 			</div>
 			<Button onClick={applyFilter}>Apply</Button>

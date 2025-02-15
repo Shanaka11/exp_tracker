@@ -14,7 +14,7 @@ const TextFilter = ({ value, onValueChange, label }: TextFilterProps) => {
 			placeholder={label}
 			onBlur={(e) => onValueChange(e.target.value)}
 			defaultValue={value}
-			className='max-w-xs'
+			className='w-[180px] bg-white'
 		/>
 	);
 };

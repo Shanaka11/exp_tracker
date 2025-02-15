@@ -49,13 +49,13 @@ const TransactionTableFilter = () => {
 			filterStringArray.push(encodeURIComponent(filterString));
 		}
 		// Date Filter
-		filterString = generateDateFilterString(date);
+		filterString = generateDateFilterString('date', date);
 		if (filterString !== '') {
 			filterStringArray.push(encodeURIComponent(filterString));
 		}
 
 		// Amount Filter
-		filterString = generateNumberFilterString(amount);
+		filterString = generateNumberFilterString('amount', amount);
 		if (filterString !== '') {
 			filterStringArray.push(encodeURIComponent(filterString));
 		}
@@ -93,7 +93,7 @@ const TransactionTableFilter = () => {
 
 	return (
 		<div className='flex gap-2 mb-4 justify-between w-full items-center'>
-			<div className='overflow-x-auto flex gap-2 items-center'>
+			<div className='overflow-x-auto flex gap-2 items-center py-1'>
 				{/* <TextFilter label='Cost Bucket' onValueChange={() => {}} /> */}
 				<CostBucketLov
 					onCostBucketSelect={handleCostBucketSelect}

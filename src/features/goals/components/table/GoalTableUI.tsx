@@ -12,6 +12,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/hooks/use-toast';
 import { deleteGoalAction } from '../../actions/deleteGoalAction';
+import GoalTableFilter from './GoalTableFilter';
 
 type GoalTableUIProps = {
 	data: GoalDto[];
@@ -136,7 +137,7 @@ const GoalTableUI = ({ data }: GoalTableUIProps) => {
 				handleEditOnClick={handleEditOnClick}
 				handleDeleteOnClick={handleDeleteOnClick}
 			/>
-			{/* {showFilter && <CostBucketTableFilter />} */}
+			{showFilter && <GoalTableFilter />}
 			<DataTable
 				columns={goalTableColumns}
 				data={data ?? []}

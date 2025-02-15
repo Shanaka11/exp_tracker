@@ -4,7 +4,14 @@ import { getGoalService } from '../../services/goal/CRUD';
 
 export const getUserGoalUseCase = async (
 	userId: string,
+	filterString?: string,
 	connection: PostgresJsDatabase<Record<string, never>> = db
 ) => {
-	return await getGoalService(connection, `eq(user,${userId})`);
+	console.log(filterString);
+	return await getGoalService(
+		connection,
+		filterString
+			? `and(eq(user,${userId}),${filterString})`
+			: `eq(user,${userId})`
+	);
 };

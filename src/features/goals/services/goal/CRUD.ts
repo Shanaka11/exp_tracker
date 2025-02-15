@@ -16,6 +16,7 @@ export const getGoalService = async (
 			query.where(filter);
 		}
 	}
+
 	const result = await query.orderBy(desc(GoalTable.id));
 
 	return result;

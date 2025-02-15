@@ -14,11 +14,13 @@ import { DateRange } from 'react-day-picker';
 
 type DateFilterProps = {
 	handleDateSelect: (date: DateRange | undefined) => void;
+	label?: string;
 };
 
 const DateFilter = ({
 	handleDateSelect,
 	className,
+	label,
 }: DateFilterProps & HTMLAttributes<HTMLDivElement>) => {
 	const [date, setDate] = React.useState<DateRange | undefined>({
 		from: undefined,
@@ -56,7 +58,9 @@ const DateFilter = ({
 								format(date.from, 'LLL dd, y')
 							)
 						) : (
-							<span>Pick a date</span>
+							<span className='text-muted-foreground'>
+								{label ?? 'Pick a date'}
+							</span>
 						)}
 					</Button>
 				</PopoverTrigger>

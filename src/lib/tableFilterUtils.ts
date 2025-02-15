@@ -1,6 +1,6 @@
 import { DateRange } from 'react-day-picker';
 
-export const generateNumberFilterString = (amount: string) => {
+export const generateNumberFilterString = (field: string, amount: string) => {
 	if (amount === '') return '';
 	if (amount[0] <= '9' && amount[0] >= '0') {
 		amount = `=${amount}`;
@@ -8,22 +8,22 @@ export const generateNumberFilterString = (amount: string) => {
 	const operations = amount.split(';');
 	const filterArray = operations.map((operation) => {
 		if (operation[0] === '=') {
-			return `eq(amount,${operation.substring(1)})`;
+			return `eq(${field},${operation.substring(1)})`;
 		}
 		if (operation[0] === '>') {
 			if (operation[1] === '=') {
-				return `gte(amount,${operation.substring(2)})`;
+				return `gte(${field},${operation.substring(2)})`;
 			}
 			if (operation[1] === '<') {
-				return `neq(amount,${operation.substring(2)})`;
+				return `neq(${field},${operation.substring(2)})`;
 			}
-			return `gt(amount,${operation.substring(1)})`;
+			return `gt(${field},${operation.substring(1)})`;
 		}
 		if (operation[0] === '<') {
 			if (operation[1] === '=') {
-				return `lte(amount,${operation.substring(2)})`;
+				return `lte(${field},${operation.substring(2)})`;
 			}
-			return `lt(amount,${operation.substring(1)})`;
+			return `lt(${field},${operation.substring(1)})`;
 		}
 		return '';
 	});
@@ -34,12 +34,15 @@ export const generateNumberFilterString = (amount: string) => {
 	return `and(${filterArray.join(',')})`;
 };
 
-export const generateDateFilterString = (date: DateRange | undefined) => {
+export const generateDateFilterString = (
+	field: string,
+	date: DateRange | undefined
+) => {
 	if (date === undefined) return '';
 	if (date.from !== undefined && date.to !== undefined) {
-		return `between(date,${date.from.toISOString()},${date.to.toISOString()})`;
+		return `between(${field},${date.from.toISOString()},${date.to.toISOString()})`;
 	} else if (date.from !== undefined) {
-		return `eq(date,${date.from.toISOString()})`;
+		return `eq(${field},${date.from.toISOString()})`;
 	}
 	return '';
 };
