@@ -16,9 +16,10 @@ import { useToast } from '@/hooks/use-toast';
 
 type TransactionTableProps = {
 	data?: TransactionDto[];
+	filterString?: string;
 };
 
-const TransactionTableUI = ({ data }: TransactionTableProps) => {
+const TransactionTableUI = ({ data, filterString }: TransactionTableProps) => {
 	const [formState, setFormState] = useState<NewTransactionDialogFormState>({
 		open: false,
 		operation: 'edit',
@@ -151,7 +152,7 @@ const TransactionTableUI = ({ data }: TransactionTableProps) => {
 				handleEditOnClick={handleEditOnClick}
 				handleDeleteOnClick={handleRowDelete}
 			/>
-			{showFilter && <TransactionTableFilter />}
+			{showFilter && <TransactionTableFilter filterStringBase={filterString} />}
 			<DataTable
 				columns={transactionTableColumns}
 				data={data ?? []}

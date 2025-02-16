@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CostBucketLov from '../CostBucketLov';
 import { CostBucketDto } from '../../models/costBucket';
 import { Button } from '@/components/ui/button';
@@ -7,12 +7,18 @@ import { useRouter } from 'next/navigation';
 import BooleanFilter from '@/features/ui/common/TableFilters/BooleanFilter';
 import NumberFilter from '@/features/ui/common/TableFilters/NumberFilter';
 import {
+	decodeFilterString,
 	generateBooleanFilterString,
 	generateDateFilterString,
 	generateNumberFilterString,
 } from '@/lib/tableFilterUtils';
 import DateFilter from '@/features/ui/common/TableFilters/DateFilter';
 import { DateRange } from 'react-day-picker';
+import { TransactionTable } from '../../models/transaction';
+
+type TransactionTableFilterProps = {
+	filterStringBase?: string;
+};
 
 const generateArrayFilterString = (costBuckets: CostBucketDto[]) => {
 	if (costBuckets.length === 0) return '';
@@ -28,9 +34,13 @@ const generateArrayFilterString = (costBuckets: CostBucketDto[]) => {
 	return `or(${flattenedArray})`;
 };
 
-const TransactionTableFilter = () => {
-	// TODO: Show applied filters as chips and allow them to be removed
+const TransactionTableFilter = ({
+	filterStringBase,
+}: TransactionTableFilterProps) => {
+	const [activeFilters, setActiveFilters] = useState<string[]>([]);
 	const router = useRouter();
+
+	console.log(activeFilters);
 
 	const clearFilter = () => {
 		setSelectedCostBucket([]);
@@ -84,6 +94,29 @@ const TransactionTableFilter = () => {
 	);
 	const [amount, setAmount] = useState<string>('');
 	const [date, setDate] = useState<DateRange | undefined>();
+
+	useEffect(() => {
+		//and(eq(costBucketId%2C2),eq(isExpense%2Ctrue),between(date%2C2025-02-06T00%3A00%3A00.000Z%2C2025-03-01T00%3A00%3A00.000Z),and(lt(amount%2C1000)%2Cgt(amount%2C100)%2Ceq(amount%2C500)))
+		/*
+		if (filterString) {
+			const filter = filterString.split(',');
+			const filterLabel = filter[0].split('(')[1];
+			const filterValue = filter[1].split(')')[0];
+			setText(filterValue);
+			setExistingFilters([`${filterLabel} = ${filterValue}`]);
+		} else {
+		 	amount('');
+			setDate(undefined);
+			isExpense(undefined);
+			selectedCostBucket([]);
+		}
+		 */
+		if (filterStringBase) {
+			//@ts-expect-error types not defined
+			// console.log(decodeFilterString(TransactionTable, filterStringBase));
+			setActiveFilters(decodeFilterString(TransactionTable, filterStringBase));
+		}
+	}, [filterStringBase]);
 	const handleCostBucketSelect = (costBucket: CostBucketDto | null) => {
 		if (costBucket !== null) {
 			if (
