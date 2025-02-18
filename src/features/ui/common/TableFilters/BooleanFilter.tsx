@@ -13,11 +13,17 @@ type BooleanFilterProps = {
 	label?: string;
 	value?: 'true' | 'false';
 	onValueChange: (value: 'true' | 'false') => void;
+	disabled?: boolean;
 };
 
-const BooleanFilter = ({ label, value, onValueChange }: BooleanFilterProps) => {
+const BooleanFilter = ({
+	label,
+	value,
+	onValueChange,
+	disabled,
+}: BooleanFilterProps) => {
 	return (
-		<Select value={value} onValueChange={onValueChange}>
+		<Select value={value} onValueChange={onValueChange} disabled={disabled}>
 			<SelectTrigger className='w-[180px] bg-white'>
 				<SelectValue placeholder={label ?? 'Select'} />
 			</SelectTrigger>

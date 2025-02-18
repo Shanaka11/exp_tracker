@@ -37,7 +37,7 @@ const TransactionTableUI = ({ data, filterString }: TransactionTableProps) => {
 		openNewDialog,
 		clearSelection,
 	} = useTableActionsHook({
-		showFilterOnMount: false,
+		showFilterOnMount: filterString !== undefined,
 	});
 
 	const router = useRouter();

@@ -15,12 +15,14 @@ import { DateRange } from 'react-day-picker';
 type DateFilterProps = {
 	handleDateSelect: (date: DateRange | undefined) => void;
 	label?: string;
+	disabled?: boolean;
 };
 
 const DateFilter = ({
 	handleDateSelect,
 	className,
 	label,
+	disabled,
 }: DateFilterProps & HTMLAttributes<HTMLDivElement>) => {
 	const [date, setDate] = React.useState<DateRange | undefined>({
 		from: undefined,
@@ -46,6 +48,7 @@ const DateFilter = ({
 							'w-[300px] justify-start text-left font-normal',
 							!date && 'text-muted-foreground'
 						)}
+						disabled={disabled}
 					>
 						<CalendarIcon />
 						{date?.from ? (

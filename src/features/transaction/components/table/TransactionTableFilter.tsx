@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import BooleanFilter from '@/features/ui/common/TableFilters/BooleanFilter';
 import NumberFilter from '@/features/ui/common/TableFilters/NumberFilter';
 import {
+	DecodedStrings,
 	decodeFilterString,
 	generateBooleanFilterString,
 	generateDateFilterString,
@@ -15,6 +16,14 @@ import {
 import DateFilter from '@/features/ui/common/TableFilters/DateFilter';
 import { DateRange } from 'react-day-picker';
 import { TransactionTable } from '../../models/transaction';
+import Tag from '@/features/ui/common/Tag';
+import { Ban, Check } from 'lucide-react';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 type TransactionTableFilterProps = {
 	filterStringBase?: string;
@@ -37,20 +46,15 @@ const generateArrayFilterString = (costBuckets: CostBucketDto[]) => {
 const TransactionTableFilter = ({
 	filterStringBase,
 }: TransactionTableFilterProps) => {
-	const [activeFilters, setActiveFilters] = useState<string[]>([]);
 	const router = useRouter();
-
-	console.log(activeFilters);
-
-	const clearFilter = () => {
-		setSelectedCostBucket([]);
-		setIsExpense(undefined);
-		setAmount('');
-		setDate(undefined);
-		router.push('/transactions');
-	};
+	const [existingFilters, setExistingFilters] = useState<DecodedStrings[]>([]);
+	console.log(existingFilters);
 
 	const applyFilter = () => {
+		if (filterStringBase !== undefined) {
+			router.push('/transactions');
+			return;
+		}
 		const filterStringArray = [];
 		let filterString = '';
 		// Cost Bucket Filter
@@ -78,7 +82,10 @@ const TransactionTableFilter = ({
 			filterStringArray.push(encodeURIComponent(filterString));
 		}
 
-		if (filterStringArray.length === 0) return;
+		if (filterStringArray.length === 0) {
+			router.push('/transactions');
+			return;
+		}
 		if (filterStringArray.length === 1) {
 			router.push(`/transactions?filter=${filterStringArray[0]}`);
 			return;
@@ -96,27 +103,22 @@ const TransactionTableFilter = ({
 	const [date, setDate] = useState<DateRange | undefined>();
 
 	useEffect(() => {
-		//and(eq(costBucketId%2C2),eq(isExpense%2Ctrue),between(date%2C2025-02-06T00%3A00%3A00.000Z%2C2025-03-01T00%3A00%3A00.000Z),and(lt(amount%2C1000)%2Cgt(amount%2C100)%2Ceq(amount%2C500)))
-		/*
-		if (filterString) {
-			const filter = filterString.split(',');
-			const filterLabel = filter[0].split('(')[1];
-			const filterValue = filter[1].split(')')[0];
-			setText(filterValue);
-			setExistingFilters([`${filterLabel} = ${filterValue}`]);
-		} else {
-		 	amount('');
-			setDate(undefined);
-			isExpense(undefined);
-			selectedCostBucket([]);
-		}
-		 */
 		if (filterStringBase) {
-			//@ts-expect-error types not defined
-			// console.log(decodeFilterString(TransactionTable, filterStringBase));
-			setActiveFilters(decodeFilterString(TransactionTable, filterStringBase));
+			const tempDecodedStrings = decodeFilterString(
+				//@ts-expect-error types not defined
+				TransactionTable,
+				filterStringBase
+			);
+			setExistingFilters(tempDecodedStrings);
+		} else {
+			setExistingFilters([]);
+			setIsExpense(undefined);
+			setAmount('');
+			setDate(undefined);
+			setSelectedCostBucket([]);
 		}
 	}, [filterStringBase]);
+
 	const handleCostBucketSelect = (costBucket: CostBucketDto | null) => {
 		if (costBucket !== null) {
 			if (
@@ -134,30 +136,62 @@ const TransactionTableFilter = ({
 
 	return (
 		<div className='flex gap-2 mb-4 justify-between w-full items-center'>
-			<div className='overflow-x-auto flex gap-2 items-center py-1'>
-				{/* <TextFilter label='Cost Bucket' onValueChange={() => {}} /> */}
-				<CostBucketLov
-					onCostBucketSelect={handleCostBucketSelect}
-					selectedCostBucketId={
-						selectedCostBucket.length > 0 ? selectedCostBucket[0].id : null
-					}
-					label='Cost Bucket'
-				/>
-				<BooleanFilter
-					label='Expense'
-					value={isExpense}
-					onValueChange={setIsExpense}
-				/>
-				<NumberFilter value={amount} onValueChange={setAmount} label='Amount' />
-				<DateFilter handleDateSelect={setDate} />
+			<div>
+				{filterStringBase === undefined && (
+					<div className='overflow-x-auto flex gap-2 items-center py-1 h-11'>
+						{/* <TextFilter label='Cost Bucket' onValueChange={() => {}} /> */}
+						<CostBucketLov
+							onCostBucketSelect={handleCostBucketSelect}
+							selectedCostBucketId={
+								selectedCostBucket.length > 0 ? selectedCostBucket[0].id : null
+							}
+							label='Cost Bucket'
+							disabled={filterStringBase !== undefined}
+						/>
+						<BooleanFilter
+							label='Expense'
+							value={isExpense}
+							onValueChange={setIsExpense}
+							disabled={filterStringBase !== undefined}
+						/>
+						<NumberFilter
+							value={amount}
+							onValueChange={setAmount}
+							label='Amount'
+							disabled={filterStringBase !== undefined}
+						/>
+						<DateFilter
+							handleDateSelect={setDate}
+							disabled={filterStringBase !== undefined}
+						/>
+					</div>
+				)}
+				{existingFilters.length > 0 && (
+					<div className='flex gap-2 items-center mt-1 h-11'>
+						{existingFilters.map((filter) => (
+							<Tag title={filter.label} key={filter.label} />
+						))}
+					</div>
+				)}
 			</div>
 			<div className='flex gap-2 items-center'>
-				<Button onClick={clearFilter}>Clear</Button>
-				<Button onClick={applyFilter}>Apply</Button>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button onClick={applyFilter} size='icon'>
+								{filterStringBase === undefined ? <Check /> : <Ban />}
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>
+							{filterStringBase === undefined ? (
+								<p>Apply Filter</p>
+							) : (
+								<p>Clear Filter</p>
+							)}
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			</div>
-			{selectedCostBucket.map((bucket) => (
-				<span key={bucket.id}>{bucket.name}</span>
-			))}
 		</div>
 	);
 };

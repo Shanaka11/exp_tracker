@@ -6,9 +6,15 @@ type NumberFilterProps = {
 	label?: string;
 	value: string;
 	onValueChange: (value: string) => void;
+	disabled?: boolean;
 };
 
-const NumberFilter = ({ label, value, onValueChange }: NumberFilterProps) => {
+const NumberFilter = ({
+	label,
+	value,
+	onValueChange,
+	disabled,
+}: NumberFilterProps) => {
 	const [error, setError] = useState<boolean>(false);
 	const handleOnValueChange = (value: string) => {
 		if (value === '') {
@@ -32,6 +38,7 @@ const NumberFilter = ({ label, value, onValueChange }: NumberFilterProps) => {
 				className={cn('bg-white', { 'border-red-500 outline-red-700': error })}
 				defaultValue={value}
 				onBlur={(e) => handleOnValueChange(e.target.value)}
+				disabled={disabled}
 			/>
 			{error && <span className='text-xs text-red-500'>Invalid format</span>}
 		</div>

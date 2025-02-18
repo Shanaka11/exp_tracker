@@ -72,12 +72,7 @@ export const decodeFilterString = (
 	const filter = filterText.trim();
 
 	const stack: filterNode[] = [];
-	const decodedStrings: {
-		field: string;
-		value: string;
-		operator: string;
-		label: string;
-	}[] = [];
+	const decodedStrings: DecodedStrings[] = [];
 
 	const executefunction = (functionName: string, args: string[]) => {
 		if (functionName === 'eq') {
@@ -222,4 +217,11 @@ export const decodeFilterString = (
 	};
 	parse();
 	return decodedStrings;
+};
+
+export type DecodedStrings = {
+	field: string;
+	value: string;
+	operator: string;
+	label: string;
 };
