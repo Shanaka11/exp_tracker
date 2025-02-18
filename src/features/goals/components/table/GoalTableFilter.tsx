@@ -1,31 +1,56 @@
 import { Button } from '@/components/ui/button';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 import DateFilter from '@/features/ui/common/TableFilters/DateFilter';
 import NumberFilter from '@/features/ui/common/TableFilters/NumberFilter';
 import TextFilter from '@/features/ui/common/TableFilters/TextFilter';
 import {
+	DecodedStrings,
+	decodeFilterString,
 	generateDateFilterString,
 	generateNumberFilterString,
 } from '@/lib/tableFilterUtils';
+import { Ban, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DateRange } from 'react-day-picker';
+import { GoalTable } from '../../models/goal';
+import Tag from '@/features/ui/common/Tag';
 
-const GoalTableFilter = () => {
+type GoalTableFilterProps = {
+	filterStringBase?: string;
+};
+
+const GoalTableFilter = ({ filterStringBase }: GoalTableFilterProps) => {
+	const [existingFilters, setExistingFilters] = useState<DecodedStrings[]>([]);
 	const [title, setTitle] = useState('');
 	const [allocatedAmount, setAllocatedAmount] = useState('');
 	const [targetAmount, setTargetAmount] = useState('');
 	const [targetDate, setTargetDate] = useState<DateRange | undefined>();
 	const router = useRouter();
 
-	const clearFilter = () => {
-		setTitle('');
-		setAllocatedAmount('');
-		setTargetAmount('');
-		setTargetDate(undefined);
-		router.push('/goals');
-	};
-
+	useEffect(() => {
+		if (filterStringBase) {
+			const tempDecodedStrings = decodeFilterString(
+				//@ts-expect-error types not defined
+				GoalTable,
+				filterStringBase
+			);
+			setExistingFilters(tempDecodedStrings);
+		} else {
+			setExistingFilters([]);
+			setTitle('');
+			setAllocatedAmount('');
+			setTargetAmount('');
+			setTargetDate(undefined);
+		}
+	}, [filterStringBase]);
 	const applyFilter = () => {
+		if (filterStringBase !== undefined) return router.push('/goals');
 		const filterStringArray: string[] = [];
 		// Title
 		if (title !== '') {
@@ -64,26 +89,51 @@ const GoalTableFilter = () => {
 	// allocated amount , target amount, target date, title
 	return (
 		<div className='flex gap-2 mb-4 justify-between w-full items-center'>
-			<div className='overflow-x-auto flex gap-2 items-center p-1'>
-				{/* Title */}
-				<TextFilter label='Title' onValueChange={setTitle} />
-				{/* Target Amount */}
-				<NumberFilter
-					label='Target Amount'
-					value={targetAmount}
-					onValueChange={setTargetAmount}
-				/>
-				{/* Allocated Amount */}
-				<NumberFilter
-					label='Allocated Amount'
-					value={allocatedAmount}
-					onValueChange={setAllocatedAmount}
-				/>
-				<DateFilter handleDateSelect={setTargetDate} label='Target Date' />
+			<div>
+				{filterStringBase === undefined && (
+					<div className='overflow-x-auto flex gap-2 items-center p-1'>
+						{/* Title */}
+						<TextFilter label='Title' onValueChange={setTitle} />
+						{/* Target Amount */}
+						<NumberFilter
+							label='Target Amount'
+							value={targetAmount}
+							onValueChange={setTargetAmount}
+						/>
+						{/* Allocated Amount */}
+						<NumberFilter
+							label='Allocated Amount'
+							value={allocatedAmount}
+							onValueChange={setAllocatedAmount}
+						/>
+						<DateFilter handleDateSelect={setTargetDate} label='Target Date' />
+					</div>
+				)}
+				{existingFilters.length > 0 && (
+					<div className='flex gap-2 items-center mt-1 h-11'>
+						{existingFilters.map((filter) => (
+							<Tag title={filter.label} key={filter.label} />
+						))}
+					</div>
+				)}
 			</div>
 			<div className='flex gap-2 items-center'>
-				<Button onClick={clearFilter}>Clear</Button>
-				<Button onClick={applyFilter}>Apply</Button>
+				<TooltipProvider>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button onClick={applyFilter} size='icon'>
+								{filterStringBase === undefined ? <Check /> : <Ban />}
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>
+							{filterStringBase === undefined ? (
+								<p>Apply Filter</p>
+							) : (
+								<p>Clear Filter</p>
+							)}
+						</TooltipContent>
+					</Tooltip>
+				</TooltipProvider>
 			</div>
 		</div>
 	);

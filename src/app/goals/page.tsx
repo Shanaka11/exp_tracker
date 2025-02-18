@@ -12,7 +12,7 @@ const page = async ({
 	return (
 		<div className='container mx-auto rounded-sm p-4 bg-slate-50 transition-all'>
 			<h1 className='font-bold text-lg mb-2'>Goals</h1>
-			<GoalTableUI data={data} />
+			<GoalTableUI data={data} filterStringBase={filterString} />
 		</div>
 	);
 };

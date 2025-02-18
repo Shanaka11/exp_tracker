@@ -48,7 +48,6 @@ const TransactionTableFilter = ({
 }: TransactionTableFilterProps) => {
 	const router = useRouter();
 	const [existingFilters, setExistingFilters] = useState<DecodedStrings[]>([]);
-	console.log(existingFilters);
 
 	const applyFilter = () => {
 		if (filterStringBase !== undefined) {
@@ -174,7 +173,7 @@ const TransactionTableFilter = ({
 					</div>
 				)}
 			</div>
-			<div className='flex gap-2 items-center'>
+			<div className='flex items-center'>
 				<TooltipProvider>
 					<Tooltip>
 						<TooltipTrigger asChild>

@@ -16,9 +16,10 @@ import GoalTableFilter from './GoalTableFilter';
 
 type GoalTableUIProps = {
 	data: GoalDto[];
+	filterStringBase?: string;
 };
 
-const GoalTableUI = ({ data }: GoalTableUIProps) => {
+const GoalTableUI = ({ data, filterStringBase }: GoalTableUIProps) => {
 	const [formState, setFormState] = useState<NewGoalDialogFormState>({
 		open: false,
 		operation: 'edit',
@@ -137,7 +138,7 @@ const GoalTableUI = ({ data }: GoalTableUIProps) => {
 				handleEditOnClick={handleEditOnClick}
 				handleDeleteOnClick={handleDeleteOnClick}
 			/>
-			{showFilter && <GoalTableFilter />}
+			{showFilter && <GoalTableFilter filterStringBase={filterStringBase} />}
 			<DataTable
 				columns={goalTableColumns}
 				data={data ?? []}
