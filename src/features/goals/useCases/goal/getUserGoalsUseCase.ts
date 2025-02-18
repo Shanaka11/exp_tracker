@@ -7,7 +7,6 @@ export const getUserGoalUseCase = async (
 	filterString?: string,
 	connection: PostgresJsDatabase<Record<string, never>> = db
 ) => {
-	console.log(filterString);
 	return await getGoalService(
 		connection,
 		filterString

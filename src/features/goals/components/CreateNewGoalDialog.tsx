@@ -104,7 +104,6 @@ const CreateNewGoalDialog = ({
 	const [selectedIcon, setSelectedIcon] = useState<IconType>('house');
 
 	useEffect(() => {
-		console.log('formState', formState);
 		if (formState?.open) {
 			form.reset({
 				title: formState.title?.value ?? '',
