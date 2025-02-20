@@ -3,10 +3,10 @@
 import { getCurrentUserServer } from '@/features/auth/util/getCurrentUserServer';
 import { getCostDistributionUseCase } from '../useCases/transaction/getCostDistributionUseCase';
 
-export const getCostDistributionAction = async () => {
+export const getCostDistributionAction = async (demo?: boolean) => {
 	// return await
 	// Get Cost Buckets
 	// get The Distribution
-	const user = getCurrentUserServer();
+	const user = getCurrentUserServer(demo);
 	return getCostDistributionUseCase(user);
 };

@@ -24,9 +24,11 @@ type CostDistributionChartProps = {
 		costBucketName: string;
 		total: string | null;
 	}[];
+	demo?: boolean;
 };
 const CostDistributionChart = ({
 	distribution,
+	demo,
 }: CostDistributionChartProps) => {
 	const [open, setOpen] = useState(false);
 	// If no data is available, show add cost buckets button
@@ -43,7 +45,10 @@ const CostDistributionChart = ({
 					<Plus /> Define Cost Buckets
 				</Button>
 				<Dialog open={open} onOpenChange={setOpen}>
-					<NewCostBucketDialog handleOnSaveSuccess={handleOnSaveSuccess} />
+					<NewCostBucketDialog
+						handleOnSaveSuccess={handleOnSaveSuccess}
+						demo={demo}
+					/>
 				</Dialog>
 			</div>
 		);

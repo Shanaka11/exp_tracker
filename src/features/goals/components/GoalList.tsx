@@ -13,9 +13,10 @@ import { GoalDto } from '../models/goal';
 
 export type GoalListProps = {
 	goals: GoalDto[];
+	demo?: boolean;
 };
 
-const GoalList = ({ goals }: GoalListProps) => {
+const GoalList = ({ goals, demo }: GoalListProps) => {
 	const [currentDate] = useState(new Date());
 
 	const { data: costBucketGoal } = useQuery({
@@ -75,7 +76,7 @@ const GoalList = ({ goals }: GoalListProps) => {
 		});
 	};
 	if (goals.length === 0) {
-		return <CreateNewGoalButton />;
+		return <CreateNewGoalButton demo={demo} />;
 	}
 	return (
 		<>
@@ -95,6 +96,7 @@ const GoalList = ({ goals }: GoalListProps) => {
 					transactionAmount={0}
 					formState={formState}
 					description='Allocate funds to a goal'
+					demo={demo}
 				/>
 			</Dialog>
 		</>

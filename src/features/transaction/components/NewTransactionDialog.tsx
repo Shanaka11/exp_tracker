@@ -84,6 +84,7 @@ type NewTransactionDialogProps = {
 	formState?: NewTransactionDialogFormState;
 	title?: string;
 	description?: string;
+	demo?: boolean;
 };
 
 const NewTransactionDialog = ({
@@ -92,6 +93,7 @@ const NewTransactionDialog = ({
 	formState,
 	title,
 	description,
+	demo,
 }: NewTransactionDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedCostBucketId, setSelectedCostBucketId] = useState<
@@ -154,7 +156,7 @@ const NewTransactionDialog = ({
 				});
 				// Trunc the time
 				values.date.setUTCHours(0, 0, 0, 0);
-				await newTransactionAction(values);
+				await newTransactionAction(values, demo);
 				form.reset();
 				toast({
 					title: 'Transaction Added successfully',
@@ -171,17 +173,20 @@ const NewTransactionDialog = ({
 				) {
 					return;
 				}
-				await updateTransactionAction({
-					id: formState.id?.value ?? 0,
-					amount: values.amount,
-					date: values.date,
-					isExpense: values.isExpense,
-					costBucketId: values.costBucketId,
-					note: values.note,
-					createdAt: formState.createdAt?.value,
-					updatedAt: formState.updatedAt?.value,
-					user: formState.user?.value,
-				});
+				await updateTransactionAction(
+					{
+						id: formState.id?.value ?? 0,
+						amount: values.amount,
+						date: values.date,
+						isExpense: values.isExpense,
+						costBucketId: values.costBucketId,
+						note: values.note,
+						createdAt: formState.createdAt?.value,
+						updatedAt: formState.updatedAt?.value,
+						user: formState.user?.value,
+					},
+					demo
+				);
 				form.reset();
 				toast({
 					title: 'Transaction updated successfully',

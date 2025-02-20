@@ -6,7 +6,11 @@ import React, { useState } from 'react';
 import CreateNewGoalDialog from './CreateNewGoalDialog';
 import { useRouter } from 'next/navigation';
 
-const CreateNewGoalButton = () => {
+type CreateNewGoalButtonProps = {
+	demo?: boolean;
+};
+
+const CreateNewGoalButton = ({ demo }: CreateNewGoalButtonProps) => {
 	const [open, setOpen] = useState(false);
 	const router = useRouter();
 
@@ -21,7 +25,10 @@ const CreateNewGoalButton = () => {
 				<Plus /> Add Goals
 			</Button>
 			<Dialog open={open} onOpenChange={setOpen}>
-				<CreateNewGoalDialog handleSaveSuccess={handleCreateNewGoalOnSuccess} />
+				<CreateNewGoalDialog
+					handleSaveSuccess={handleCreateNewGoalOnSuccess}
+					demo={demo}
+				/>
 			</Dialog>
 		</div>
 	);

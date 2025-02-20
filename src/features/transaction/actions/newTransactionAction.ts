@@ -5,8 +5,9 @@ import { InsertTransactionDto } from '../models/transaction';
 import { createTransactionUseCase } from '../useCases/transaction/CRUD';
 
 export const newTransactionAction = async (
-	transaction: InsertTransactionDto
+	transaction: InsertTransactionDto,
+	demo?: boolean
 ) => {
-	const user = getCurrentUserServer();
+	const user = getCurrentUserServer(demo);
 	return await createTransactionUseCase(transaction, user);
 };

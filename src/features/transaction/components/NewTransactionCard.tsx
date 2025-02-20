@@ -6,7 +6,11 @@ import NewTransactionDialog from './NewTransactionDialog';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 
-const NewTransactionCard = () => {
+type NewTransactionCardProps = {
+	demo?: boolean;
+};
+
+const NewTransactionCard = ({ demo }: NewTransactionCardProps) => {
 	const router = useRouter();
 	const transactionInput = React.useRef<HTMLInputElement>(null);
 	const [transactionAmount, setTransactionAmount] = useState<null | number>(
@@ -71,6 +75,7 @@ const NewTransactionCard = () => {
 					<NewTransactionDialog
 						handleSaveSuccess={handleAddNewTransactionSuccess}
 						transactionAmount={transactionAmount}
+						demo={demo}
 					/>
 				)}
 			</Dialog>

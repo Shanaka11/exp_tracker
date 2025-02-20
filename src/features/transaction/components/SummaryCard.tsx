@@ -1,8 +1,11 @@
 import React from 'react';
 import { getTransactionSummaryAction } from '../actions/getTransactionSummaryAction';
 
-const SummaryCard = async () => {
-	const summary = await getTransactionSummaryAction();
+type SummaryCardProps = {
+	demo?: boolean;
+};
+const SummaryCard = async ({ demo }: SummaryCardProps) => {
+	const summary = await getTransactionSummaryAction(demo);
 
 	return (
 		<div className='col-span-1 md:col-span-3 grid grid-cols-3 gap-2'>

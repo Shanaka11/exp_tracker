@@ -79,11 +79,13 @@ export type NewGoalDialogFormState = {
 type CreateNewGoalDialogProps = {
 	handleSaveSuccess: () => void;
 	formState?: NewGoalDialogFormState;
+	demo?: boolean;
 };
 
 const CreateNewGoalDialog = ({
 	handleSaveSuccess,
 	formState,
+	demo,
 }: CreateNewGoalDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
@@ -144,15 +146,18 @@ const CreateNewGoalDialog = ({
 				) {
 					return;
 				}
-				await updateGoalAction({
-					...values,
-					id: formState?.id?.value ?? 0,
-					createdAt: formState.createdAt.value,
-					updatedAt: formState.updatedAt.value,
-					user: formState?.user?.value,
-				});
+				await updateGoalAction(
+					{
+						...values,
+						id: formState?.id?.value ?? 0,
+						createdAt: formState.createdAt.value,
+						updatedAt: formState.updatedAt.value,
+						user: formState?.user?.value,
+					},
+					demo
+				);
 			} else {
-				await createGoalAction(values);
+				await createGoalAction(values, demo);
 			}
 
 			form.reset();

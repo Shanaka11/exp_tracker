@@ -4,7 +4,10 @@ import { getCurrentUserServer } from '@/features/auth/util/getCurrentUserServer'
 import { TransactionDto } from '../models/transaction';
 import { updateTransactionUseCase } from '../useCases/transaction/CRUD';
 
-export const updateTransactionAction = async (transaction: TransactionDto) => {
-	const user = getCurrentUserServer();
+export const updateTransactionAction = async (
+	transaction: TransactionDto,
+	demo?: boolean
+) => {
+	const user = getCurrentUserServer(demo);
 	return await updateTransactionUseCase(transaction, user);
 };

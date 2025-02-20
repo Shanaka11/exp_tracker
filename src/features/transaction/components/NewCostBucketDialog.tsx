@@ -58,11 +58,13 @@ export type NewCostBucketDialogFormState = {
 type NewCostBucketDialogProps = {
 	formState?: NewCostBucketDialogFormState;
 	handleOnSaveSuccess: () => void;
+	demo?: boolean;
 };
 
 const NewCostBucketDialog = ({
 	formState,
 	handleOnSaveSuccess,
+	demo,
 }: NewCostBucketDialogProps) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { toast } = useToast();
@@ -119,18 +121,21 @@ const NewCostBucketDialog = ({
 				) {
 					return;
 				}
-				const result = await updateCostBucketAction({
-					...values,
-					id: formState?.id?.value ?? 0,
-					createdAt: formState?.createdAt?.value,
-					updatedAt: formState?.updatedAt?.value,
-					user: formState?.user?.value,
-				});
+				const result = await updateCostBucketAction(
+					{
+						...values,
+						id: formState?.id?.value ?? 0,
+						createdAt: formState?.createdAt?.value,
+						updatedAt: formState?.updatedAt?.value,
+						user: formState?.user?.value,
+					},
+					demo
+				);
 				if (result?.error) {
 					throw new Error(result.error);
 				}
 			} else {
-				await newCostBucketAction(values);
+				await newCostBucketAction(values, demo);
 			}
 			form.reset();
 			handleOnSaveSuccess();

@@ -2,8 +2,12 @@ import React from 'react';
 import TransactionListItem from './TransactionListItem';
 import { getTransactionsAction } from '../actions/getTransactionsAction';
 
-const TransactionList = async () => {
-	const transactions = await getTransactionsAction();
+type TransactionListProps = {
+	demo?: boolean;
+};
+
+const TransactionList = async ({ demo }: TransactionListProps) => {
+	const transactions = await getTransactionsAction(demo);
 
 	return (
 		<ol className='overflow-auto h-full flex flex-col gap-1'>
