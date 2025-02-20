@@ -4,8 +4,9 @@ import { TransactionDto } from '../models/transaction';
 import { deleteTransactionUseCase } from '../useCases/transaction/CRUD';
 
 export const deleteTransactionsAction = async (
-	transactions: TransactionDto[]
+	transactions: TransactionDto[],
+	demo?: boolean
 ) => {
-	const user = getCurrentUserServer();
+	const user = getCurrentUserServer(demo);
 	return await deleteTransactionUseCase(transactions, user);
 };

@@ -17,9 +17,14 @@ import { useToast } from '@/hooks/use-toast';
 type TransactionTableProps = {
 	data?: TransactionDto[];
 	filterString?: string;
+	demo?: boolean;
 };
 
-const TransactionTableUI = ({ data, filterString }: TransactionTableProps) => {
+const TransactionTableUI = ({
+	data,
+	filterString,
+	demo,
+}: TransactionTableProps) => {
 	const [formState, setFormState] = useState<NewTransactionDialogFormState>({
 		open: false,
 		operation: 'edit',
@@ -61,7 +66,7 @@ const TransactionTableUI = ({ data, filterString }: TransactionTableProps) => {
 			const selectedItems = Object.keys(rowSelection).map(
 				(index) => data[Number(index)]
 			);
-			await deleteTransactionsAction(selectedItems);
+			await deleteTransactionsAction(selectedItems, demo);
 			toast({
 				title: 'Transactions Deleted Successfully',
 			});
@@ -142,6 +147,7 @@ const TransactionTableUI = ({ data, filterString }: TransactionTableProps) => {
 					formState={
 						newTransactionDialogState === 'UPDATE' ? formState : undefined
 					}
+					demo={demo}
 				/>
 			</Dialog>
 			<TableActions

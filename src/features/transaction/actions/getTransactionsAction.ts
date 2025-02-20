@@ -5,9 +5,10 @@ import { getAllTransactionsUseCase } from '../useCases/transaction/getAllTransac
 
 export const getTransactionsAction = async (
 	recent: boolean = true,
-	filterString?: string
+	filterString?: string,
+	demo?: boolean
 ) => {
-	const user = getCurrentUserServer();
+	const user = getCurrentUserServer(demo);
 	if (recent) {
 		return await getRecentTransactionsUseCase(user);
 	} else {
