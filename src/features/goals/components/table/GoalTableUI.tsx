@@ -17,9 +17,10 @@ import GoalTableFilter from './GoalTableFilter';
 type GoalTableUIProps = {
 	data: GoalDto[];
 	filterStringBase?: string;
+	demo?: boolean;
 };
 
-const GoalTableUI = ({ data, filterStringBase }: GoalTableUIProps) => {
+const GoalTableUI = ({ data, filterStringBase, demo }: GoalTableUIProps) => {
 	const [formState, setFormState] = useState<NewGoalDialogFormState>({
 		open: false,
 		operation: 'edit',
@@ -89,7 +90,7 @@ const GoalTableUI = ({ data, filterStringBase }: GoalTableUIProps) => {
 			const selectedItems = Object.keys(rowSelection).map(
 				(index) => data[Number(index)]
 			);
-			await deleteGoalAction(selectedItems);
+			await deleteGoalAction(selectedItems, demo);
 			toast({
 				title: 'Transactions Deleted Successfully',
 			});
@@ -128,6 +129,7 @@ const GoalTableUI = ({ data, filterStringBase }: GoalTableUIProps) => {
 					formState={
 						newTransactionDialogState === 'UPDATE' ? formState : undefined
 					}
+					demo={demo}
 				/>
 			</Dialog>
 			<TableActions
