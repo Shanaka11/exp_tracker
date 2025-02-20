@@ -8,7 +8,7 @@ export const getTransactionsAction = async (
 	filterString?: string,
 	demo?: boolean
 ) => {
-	const user = getCurrentUserServer(demo);
+	const user = await getCurrentUserServer(demo);
 	if (recent) {
 		return await getRecentTransactionsUseCase(user);
 	} else {

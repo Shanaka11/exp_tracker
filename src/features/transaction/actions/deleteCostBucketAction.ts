@@ -8,6 +8,6 @@ export const deleteCostBucketAction = async (
 	costBuckets: CostBucketDto[],
 	demo?: boolean
 ) => {
-	const user = getCurrentUserServer(demo);
+	const user = await getCurrentUserServer(demo);
 	return await deleteCostBucketsUserCase(costBuckets, user);
 };

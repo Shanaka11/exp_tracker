@@ -5,6 +5,6 @@ import { GoalDto } from '../models/goal';
 import { deleteGoalUseCase } from '../useCases/goal/CRUD';
 
 export const deleteGoalAction = async (goals: GoalDto[], demo?: boolean) => {
-	const user = getCurrentUserServer(demo);
+	const user = await getCurrentUserServer(demo);
 	return await deleteGoalUseCase(goals, user);
 };

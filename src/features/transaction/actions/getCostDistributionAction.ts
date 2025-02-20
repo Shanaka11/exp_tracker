@@ -7,6 +7,6 @@ export const getCostDistributionAction = async (demo?: boolean) => {
 	// return await
 	// Get Cost Buckets
 	// get The Distribution
-	const user = getCurrentUserServer(demo);
+	const user = await getCurrentUserServer(demo);
 	return getCostDistributionUseCase(user);
 };

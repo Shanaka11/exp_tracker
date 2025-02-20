@@ -11,7 +11,7 @@ export const getUserCostBucketUseCase = async (
 		connection,
 		filterString
 			? `and(eq(user,${userId}),${filterString})`
-			: `eq(user,${userId})`
+			: `or(eq(user,${userId}),eq(name,Goal))`
 	);
 	return costBuckets;
 };

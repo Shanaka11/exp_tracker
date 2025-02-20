@@ -7,6 +7,6 @@ export const deleteTransactionsAction = async (
 	transactions: TransactionDto[],
 	demo?: boolean
 ) => {
-	const user = getCurrentUserServer(demo);
+	const user = await getCurrentUserServer(demo);
 	return await deleteTransactionUseCase(transactions, user);
 };

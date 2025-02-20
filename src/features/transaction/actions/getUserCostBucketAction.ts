@@ -7,6 +7,6 @@ export const getUserCostBucketAction = async (
 	filterString?: string,
 	demo?: boolean
 ) => {
-	const userId = getCurrentUserServer(demo);
+	const userId = await getCurrentUserServer(demo);
 	return getUserCostBucketUseCase(userId, filterString);
 };

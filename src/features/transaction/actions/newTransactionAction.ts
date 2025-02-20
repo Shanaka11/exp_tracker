@@ -8,6 +8,6 @@ export const newTransactionAction = async (
 	transaction: InsertTransactionDto,
 	demo?: boolean
 ) => {
-	const user = getCurrentUserServer(demo);
+	const user = await getCurrentUserServer(demo);
 	return await createTransactionUseCase(transaction, user);
 };

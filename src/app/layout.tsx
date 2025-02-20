@@ -28,7 +28,7 @@ export default function RootLayout({
 	return (
 		<html lang='en'>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh grid grid-rows-[40px_1fr] grid-cols-[50px_1fr]`}
+				className={`${geistSans.variable} ${geistMono.variable} antialiased h-dvh grid grid-rows-[50px_1fr] grid-cols-[50px_1fr]`}
 			>
 				<Providers>
 					<AppBar />

@@ -8,6 +8,6 @@ export const newCostBucketAction = async (
 	costBucket: InsertCostBucketDto,
 	demo?: boolean
 ) => {
-	const user = getCurrentUserServer(demo);
+	const user = await getCurrentUserServer(demo);
 	await createCostBucketUseCase(costBucket, user);
 };

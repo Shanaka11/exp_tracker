@@ -5,6 +5,7 @@ import {
 	QueryClient,
 	QueryClientProvider,
 } from '@tanstack/react-query';
+import { SessionProvider } from 'next-auth/react';
 
 type QueryProvideProps = {
 	children: React.ReactNode;
@@ -41,7 +42,9 @@ function getQueryClient() {
 const Providers = ({ children }: QueryProvideProps) => {
 	const queryClient = getQueryClient();
 	return (
-		<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+		<SessionProvider>
+			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+		</SessionProvider>
 	);
 };
 
