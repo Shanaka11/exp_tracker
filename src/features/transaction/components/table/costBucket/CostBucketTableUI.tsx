@@ -17,9 +17,14 @@ import CostBucketTableFilter from './CostBucketTableFilter';
 type CostBucketTableUIProps = {
 	data: CostBucketDto[];
 	filterString?: string;
+	demo?: boolean;
 };
 
-const CostBucketTableUI = ({ data, filterString }: CostBucketTableUIProps) => {
+const CostBucketTableUI = ({
+	data,
+	filterString,
+	demo,
+}: CostBucketTableUIProps) => {
 	const [formState, setFormState] = useState<NewCostBucketDialogFormState>({
 		open: false,
 		operation: 'edit',
@@ -76,7 +81,7 @@ const CostBucketTableUI = ({ data, filterString }: CostBucketTableUIProps) => {
 			const selectedItems = Object.keys(rowSelection).map(
 				(index) => data[Number(index)]
 			);
-			await deleteCostBucketAction(selectedItems);
+			await deleteCostBucketAction(selectedItems, demo);
 			toast({
 				title: 'Transactions Deleted Successfully',
 			});
@@ -115,6 +120,7 @@ const CostBucketTableUI = ({ data, filterString }: CostBucketTableUIProps) => {
 					formState={
 						newTransactionDialogState === 'UPDATE' ? formState : undefined
 					}
+					demo={demo}
 				/>
 			</Dialog>
 			<TableActions
