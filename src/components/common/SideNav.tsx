@@ -1,3 +1,4 @@
+'use client';
 import Link from 'next/link';
 import React from 'react';
 import { buttonVariants } from '../ui/button';
@@ -13,8 +14,11 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '../ui/tooltip';
+import { usePathname } from 'next/navigation';
 
 const SideNav = () => {
+	const pathname = usePathname();
+
 	return (
 		<nav className='hidden md:flex flex-col gap-2 items-center py-2 bg-primary'>
 			<TooltipProvider>
@@ -26,7 +30,9 @@ const SideNav = () => {
 								className:
 									'w-full rounded-none hover:translate-x-1 hover:rounded-sm',
 							})}
-							href={'/dashboard'}
+							href={
+								pathname.includes('/demo/') ? '/demo/dashboard' : '/dashboard'
+							}
 						>
 							<LayoutDashboard />
 						</Link>
@@ -46,7 +52,11 @@ const SideNav = () => {
 								className:
 									'w-full rounded-none hover:translate-x-1 hover:rounded-sm',
 							})}
-							href={'/transactions'}
+							href={
+								pathname.includes('/demo/')
+									? '/demo/transactions'
+									: '/transactions'
+							}
 						>
 							<ArrowLeftRight />
 						</Link>
@@ -64,7 +74,11 @@ const SideNav = () => {
 								className:
 									'w-full rounded-none hover:translate-x-1 hover:rounded-sm',
 							})}
-							href={'/costbuckets'}
+							href={
+								pathname.includes('/demo/')
+									? '/demo/costbuckets'
+									: '/costbuckets'
+							}
 						>
 							<ChartColumn />
 						</Link>
@@ -84,7 +98,7 @@ const SideNav = () => {
 								className:
 									'w-full rounded-none hover:translate-x-1 hover:rounded-sm',
 							})}
-							href={'/goals'}
+							href={pathname.includes('/demo/') ? '/demo/goals' : '/goals'}
 						>
 							<Goal />
 						</Link>

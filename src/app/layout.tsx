@@ -3,7 +3,6 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import Providers from '@/providers/Providers';
-import SideNav from '@/components/common/SideNav';
 import AppBar from '@/components/common/AppBar';
 
 const geistSans = Geist({
@@ -33,10 +32,7 @@ export default function RootLayout({
 			>
 				<Providers>
 					<AppBar />
-					<SideNav />
-					<main className='py-4 px-4 bg-slate-200 h-full overflow-auto md:overflow-hidden col-span-2 md:col-span-1'>
-						{children}
-					</main>
+					{children}
 					<Toaster />
 				</Providers>
 			</body>
