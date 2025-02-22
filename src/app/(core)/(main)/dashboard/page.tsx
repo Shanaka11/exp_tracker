@@ -1,11 +1,19 @@
+import { auth } from '@/features/auth/auth';
 import GoalsCard from '@/features/goals/components/GoalsCard';
 import CostDistributionCard from '@/features/transaction/components/CostDistributionCard';
 import NewTransactionCard from '@/features/transaction/components/NewTransactionCard';
 import SummaryCard from '@/features/transaction/components/SummaryCard';
 import TransactionList from '@/features/transaction/components/TransactionList';
+import { unauthorized } from 'next/navigation';
 import React from 'react';
 
-const page = () => {
+const page = async () => {
+	const session = await auth();
+
+	if (!session) {
+		return unauthorized();
+	}
+
 	return (
 		<div className='grid grid-cols-1 md:grid-cols-3 gap-2 h-full grid-rows-[auto_auto_1fr]'>
 			<SummaryCard />
@@ -21,5 +29,4 @@ const page = () => {
 		</div>
 	);
 };
-
 export default page;

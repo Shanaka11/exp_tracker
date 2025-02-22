@@ -1,5 +1,7 @@
+import { auth } from '@/features/auth/auth';
 import { getGoalsAction } from '@/features/goals/actions/getGoalsAction';
 import GoalTableUI from '@/features/goals/components/table/GoalTableUI';
+import { unauthorized } from 'next/navigation';
 import React from 'react';
 
 const page = async ({
@@ -7,6 +9,12 @@ const page = async ({
 }: {
 	searchParams: Promise<{ filter?: string }>;
 }) => {
+	const session = await auth();
+
+	if (!session) {
+		return unauthorized();
+	}
+
 	const filterString = (await searchParams).filter;
 	const data = await getGoalsAction(filterString);
 	return (

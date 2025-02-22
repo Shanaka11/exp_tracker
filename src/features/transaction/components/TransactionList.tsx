@@ -7,7 +7,7 @@ type TransactionListProps = {
 };
 
 const TransactionList = async ({ demo }: TransactionListProps) => {
-	const transactions = await getTransactionsAction(demo);
+	const transactions = await getTransactionsAction(true, undefined, demo);
 
 	return (
 		<ol className='overflow-auto h-full flex flex-col gap-1'>
