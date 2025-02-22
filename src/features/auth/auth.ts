@@ -4,10 +4,13 @@ import Github from 'next-auth/providers/github';
 export const { handlers, signIn, signOut, auth } = NextAuth({
 	providers: [Github],
 	callbacks: {
-		jwt({ token, user }) {
-			if (user) {
-				// User is available during sign-in
-				token.id = user.id;
+		jwt({ token, profile }) {
+			// if (user) {
+			// 	// User is available during sign-in
+			// 	token.id = user.id;
+			// }
+			if (profile) {
+				token.id = profile.id;
 			}
 			return token;
 		},
