@@ -11,7 +11,7 @@ const SignIn = ({ children }: SignInProps) => {
 		<form
 			action={async () => {
 				'use server';
-				await signIn();
+				await signIn(undefined, { redirect: true, redirectTo: '/dashboard' });
 			}}
 		>
 			{children ?? (
