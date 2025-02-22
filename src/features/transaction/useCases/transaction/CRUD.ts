@@ -51,8 +51,10 @@ export const updateTransactionUseCase_ = async (
 		throw new Error('Transaction not found');
 	}
 
-	if (oldTransaction[0].user !== userId) {
-		throw new Error('Transaction is not owned by the user');
+	if (Number(oldTransaction[0].user) !== Number(userId)) {
+		throw new Error(
+			`Transaction is not owned by the user ${oldTransaction[0].user}, ${userId}`
+		);
 	}
 	// Check the updated dates to see if the transaction is updated by someonelse
 	if (
@@ -95,8 +97,10 @@ export const deleteTransactionUseCase_ = async (
 			throw new Error('Transaction not found');
 		}
 
-		if (oldTransaction[0].user !== userId) {
-			throw new Error('Transaction is not owned by the user');
+		if (Number(oldTransaction[0].user) !== Number(userId)) {
+			throw new Error(
+				`Transaction is not owned by the user ${oldTransaction[0].user}, ${userId}`
+			);
 		}
 		// Check the updated dates to see if the transaction is updated by someonelse
 		if (
