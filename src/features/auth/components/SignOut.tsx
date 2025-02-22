@@ -6,7 +6,7 @@ const SignOut = () => {
 		<form
 			action={async () => {
 				'use server';
-				await signOut();
+				await signOut({ redirect: true, redirectTo: '/' });
 			}}
 		>
 			<button type='submit'>Sign Out</button>

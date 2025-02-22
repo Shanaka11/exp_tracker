@@ -2,7 +2,11 @@ import { signIn } from '@/features/auth/auth';
 import React from 'react';
 import { Button } from '../../../components/ui/button';
 
-const SignIn = () => {
+type SignInProps = {
+	children?: React.ReactNode;
+};
+
+const SignIn = ({ children }: SignInProps) => {
 	return (
 		<form
 			action={async () => {
@@ -10,9 +14,16 @@ const SignIn = () => {
 				await signIn();
 			}}
 		>
-			<Button type='submit' variant='secondary' size='sm'>
-				Sign In
-			</Button>
+			{children ?? (
+				<Button
+					type='submit'
+					variant='secondary'
+					className='text-sm font-semibold uppercase'
+					size='sm'
+				>
+					Sign In
+				</Button>
+			)}
 		</form>
 	);
 };
